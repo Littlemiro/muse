@@ -1,0 +1,7 @@
+[Unit]
+Description=Sync MUSE MCP skills from GitHub
+[Service]
+Type=oneshot
+User=%(USER)s
+WorkingDirectory=/opt/muse/skills
+ExecStart=/usr/bin/git pull --rebase --autostash origin main

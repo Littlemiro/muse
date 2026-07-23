@@ -1,0 +1,7 @@
+[Unit]
+Description=Daily MUSE MCP skills sync
+[Timer]
+OnCalendar=daily
+Persistent=true
+[Install]
+WantedBy=timers.target

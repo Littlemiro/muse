@@ -1,0 +1,5424 @@
+{
+  "total_classified": 171,
+  "summary_by_category": {
+    "software_development": 44,
+    "creative_generation": 25,
+    "research_knowledge": 22,
+    "devops_infrastructure": 21,
+    "integrations_services": 14,
+    "productivity_automation": 14,
+    "specialized_domain": 11,
+    "desktop_control": 8,
+    "data_science": 7,
+    "scraping_extraction": 4,
+    "writing_editing": 1
+  },
+  "low_confidence_count": 0,
+  "low_confidence_skills": [],
+  "specialized_domain_skills": [
+    "3d-print-finishing",
+    "belief-evolution-tracking",
+    "conversational-intelligence",
+    "cooking-science",
+    "minecraft-modpack-server",
+    "moviepilot-ops",
+    "physical-prototyping",
+    "plant-care",
+    "pokemon-player",
+    "pt-smart-seeder",
+    "think-like-a-cat"
+  ],
+  "classifications": [
+    {
+      "name": "3d-print-finishing",
+      "original_category": "creative",
+      "original_tags": [],
+      "primary_category": "specialized_domain",
+      "secondary_categories": [
+        "creative_generation",
+        "desktop_control"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: specialized_domain — 3D print post-processing (painting, sanding, weathering) is physical craft, not digital creative output."
+    },
+    {
+      "name": "academic-meeting-prep",
+      "original_category": "productivity",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "productivity_automation",
+        "writing_editing"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "mcp",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: research_knowledge — preparing for academic exploratory meetings with senior researchers, building logic chains, finding research gaps."
+    },
+    {
+      "name": "academic-research-workflow",
+      "original_category": "research",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "desktop_control",
+        "software_development"
+      ],
+      "capability_tags": [
+        "extract",
+        "search"
+      ],
+      "target_objects": [
+        "paper"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: research_knowledge (conf=1.00) based on category='research', desc='Structured workflows for academic research tasks — systemati'"
+    },
+    {
+      "name": "ai-project-context",
+      "original_category": "github",
+      "original_tags": [
+        "GitHub",
+        "Documentation",
+        "AI",
+        "Project-Onboarding",
+        "Context"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "desktop_control",
+        "integrations_services"
+      ],
+      "capability_tags": [
+        "code"
+      ],
+      "target_objects": [
+        "github",
+        "repository"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='github', desc='Create AI-readable project context files (AI_CONTEXT.md) in '"
+    },
+    {
+      "name": "ai-service-china-subscription",
+      "original_category": "productivity",
+      "original_tags": [],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "productivity_automation"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: integrations_services — guide for subscribing to external AI services (Claude/ChatGPT) from China via payment channels."
+    },
+    {
+      "name": "airtable",
+      "original_category": "productivity",
+      "original_tags": [
+        "Airtable",
+        "Productivity",
+        "Database",
+        "API"
+      ],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "productivity_automation",
+        "data_science"
+      ],
+      "capability_tags": [
+        "write"
+      ],
+      "target_objects": [
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: integrations_services — Airtable REST API CRUD operations via curl. External database service integration."
+    },
+    {
+      "name": "apple-notes",
+      "original_category": "apple",
+      "original_tags": [
+        "Notes",
+        "Apple",
+        "macOS",
+        "note-taking"
+      ],
+      "primary_category": "desktop_control",
+      "secondary_categories": [
+        "research_knowledge",
+        "software_development"
+      ],
+      "capability_tags": [
+        "edit",
+        "search"
+      ],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.6,
+      "reason": "Primary: desktop_control (conf=0.60) based on category='apple', desc='Manage Apple Notes via memo CLI: create, search, edit.'"
+    },
+    {
+      "name": "apple-reminders",
+      "original_category": "apple",
+      "original_tags": [
+        "Reminders",
+        "tasks",
+        "todo",
+        "macOS",
+        "Apple"
+      ],
+      "primary_category": "desktop_control",
+      "secondary_categories": [
+        "productivity_automation",
+        "specialized_domain"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": true,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.6,
+      "reason": "Primary: desktop_control (conf=0.60) based on category='apple', desc='Apple Reminders via remindctl: add, list, complete.'"
+    },
+    {
+      "name": "architecture-diagram",
+      "original_category": "creative",
+      "original_tags": [
+        "architecture",
+        "diagrams",
+        "SVG",
+        "HTML",
+        "visualization",
+        "infrastructure",
+        "cloud"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "creative_generation"
+      ],
+      "capability_tags": [
+        "browse",
+        "deploy",
+        "write"
+      ],
+      "target_objects": [
+        "browser",
+        "database"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: software_development — generates SVG architecture/cloud/infra diagrams as HTML for software system documentation."
+    },
+    {
+      "name": "arxiv",
+      "original_category": "research",
+      "original_tags": [
+        "Research",
+        "Arxiv",
+        "Papers",
+        "Academic",
+        "Science",
+        "API"
+      ],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "specialized_domain",
+        "integrations_services"
+      ],
+      "capability_tags": [
+        "extract",
+        "retrieve",
+        "search"
+      ],
+      "target_objects": [
+        "paper"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: research_knowledge (conf=1.00) based on category='research', desc='Search arXiv papers by keyword, author, category, or ID.'"
+    },
+    {
+      "name": "ascii-art",
+      "original_category": "creative",
+      "original_tags": [
+        "ASCII",
+        "Art",
+        "Banners",
+        "Creative",
+        "Unicode",
+        "Text-Art",
+        "pyfiglet",
+        "figlet",
+        "cowsay",
+        "boxes"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "software_development",
+        "integrations_services"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli",
+        "image"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: creative_generation (conf=1.00) based on category='creative', desc='ASCII art: pyfiglet, cowsay, boxes, image-to-ascii.'"
+    },
+    {
+      "name": "ascii-video",
+      "original_category": "creative",
+      "original_tags": [],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "data_science",
+        "software_development"
+      ],
+      "capability_tags": [
+        "visualize"
+      ],
+      "target_objects": [
+        "audio",
+        "image",
+        "video"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: creative_generation (conf=1.00) based on category='creative', desc='ASCII video: convert video/audio to colored ASCII MP4/GIF.'"
+    },
+    {
+      "name": "audiocraft-audio-generation",
+      "original_category": "mlops",
+      "original_tags": [
+        "Multimodal",
+        "Audio Generation",
+        "Text-to-Music",
+        "Text-to-Audio",
+        "MusicGen"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "specialized_domain",
+        "software_development"
+      ],
+      "capability_tags": [
+        "code"
+      ],
+      "target_objects": [
+        "audio"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.95,
+      "reason": "Primary: creative_generation (conf=0.95) based on category='mlops', desc='AudioCraft: MusicGen text-to-music, AudioGen text-to-sound.'"
+    },
+    {
+      "name": "baoyu-article-illustrator",
+      "original_category": "creative",
+      "original_tags": [
+        "article-illustration",
+        "creative",
+        "image-generation"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "data_science",
+        "software_development"
+      ],
+      "capability_tags": [
+        "analyze"
+      ],
+      "target_objects": [
+        "github",
+        "image"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.95,
+      "reason": "Primary: creative_generation (conf=0.95) based on category='creative', desc='Article illustrations: type × style × palette consistency.'"
+    },
+    {
+      "name": "baoyu-comic",
+      "original_category": "creative",
+      "original_tags": [
+        "comic",
+        "knowledge-comic",
+        "creative",
+        "image-generation"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "specialized_domain",
+        "research_knowledge"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: creative_generation (conf=1.00) based on category='creative', desc='Knowledge comics (知识漫画): educational, biography, tutorial.'"
+    },
+    {
+      "name": "baoyu-infographic",
+      "original_category": "creative",
+      "original_tags": [
+        "infographic",
+        "visual-summary",
+        "creative",
+        "image-generation"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "software_development"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: creative_generation — infographics with 21 layouts x 21 styles. Visual content generation."
+    },
+    {
+      "name": "belief-evolution-tracking",
+      "original_category": "software-development",
+      "original_tags": [
+        "memory",
+        "beliefs",
+        "conversation",
+        "tracking",
+        "evolution"
+      ],
+      "primary_category": "specialized_domain",
+      "secondary_categories": [
+        "research_knowledge",
+        "productivity_automation"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": true,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.65,
+      "reason": "Primary: specialized_domain — tracks user beliefs/ideas across conversations, detects evolution. Conversational behavior meta-skill."
+    },
+    {
+      "name": "bilibili-archival",
+      "original_category": "productivity",
+      "original_tags": [],
+      "primary_category": "scraping_extraction",
+      "secondary_categories": [
+        "productivity_automation",
+        "integrations_services"
+      ],
+      "capability_tags": [
+        "analyze",
+        "search"
+      ],
+      "target_objects": [
+        "github",
+        "markdown"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: scraping_extraction — backup Bilibili column articles via API, convert HTML to markdown, push to GitHub."
+    },
+    {
+      "name": "bilibili-summarizer",
+      "original_category": "productivity",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "scraping_extraction",
+        "productivity_automation"
+      ],
+      "capability_tags": [
+        "extract"
+      ],
+      "target_objects": [
+        "video"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: research_knowledge — extract Bilibili video subtitles, summarize via LLM, save structured notes to Obsidian."
+    },
+    {
+      "name": "blogwatcher",
+      "original_category": "research",
+      "original_tags": [
+        "RSS",
+        "Blogs",
+        "Feed-Reader",
+        "Monitoring"
+      ],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "devops_infrastructure"
+      ],
+      "capability_tags": [
+        "monitor"
+      ],
+      "target_objects": [
+        "cli",
+        "github",
+        "rss"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: research_knowledge — monitor blogs and RSS/Atom feeds via blogwatcher-cli. Information awareness pipeline."
+    },
+    {
+      "name": "chinese-social-media-scraping",
+      "original_category": "research",
+      "original_tags": [],
+      "primary_category": "scraping_extraction",
+      "secondary_categories": [
+        "research_knowledge"
+      ],
+      "capability_tags": [
+        "code",
+        "scrape",
+        "search"
+      ],
+      "target_objects": [
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: scraping_extraction — setting up MediaCrawler to collect public data from Chinese social media platforms."
+    },
+    {
+      "name": "claude-code",
+      "original_category": "autonomous-ai-agents",
+      "original_tags": [
+        "Coding-Agent",
+        "Claude",
+        "Anthropic",
+        "Code-Review",
+        "Refactoring",
+        "PTY",
+        "Automation"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "productivity_automation",
+        "desktop_control"
+      ],
+      "capability_tags": [
+        "browse",
+        "code",
+        "write"
+      ],
+      "target_objects": [
+        "browser",
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='autonomous-ai-agents', desc='Delegate coding to Claude Code CLI (features, PRs).'"
+    },
+    {
+      "name": "claude-design",
+      "original_category": "creative",
+      "original_tags": [
+        "design",
+        "html",
+        "prototype",
+        "ux",
+        "ui",
+        "creative",
+        "artifact",
+        "deck",
+        "motion",
+        "design-system"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "software_development",
+        "data_science"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: creative_generation (conf=1.00) based on category='creative', desc='Design one-off HTML artifacts (landing, deck, prototype).'"
+    },
+    {
+      "name": "codebase-inspection",
+      "original_category": "github",
+      "original_tags": [
+        "LOC",
+        "Code Analysis",
+        "pygount",
+        "Codebase",
+        "Metrics",
+        "Repository"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "research_knowledge",
+        "desktop_control"
+      ],
+      "capability_tags": [
+        "analyze",
+        "code"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.9,
+      "reason": "Primary: software_development (conf=0.90) based on category='github', desc='Inspect codebases w/ pygount: LOC, languages, ratios.'"
+    },
+    {
+      "name": "codex",
+      "original_category": "autonomous-ai-agents",
+      "original_tags": [
+        "Coding-Agent",
+        "Codex",
+        "OpenAI",
+        "Code-Review",
+        "Refactoring"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "integrations_services",
+        "desktop_control"
+      ],
+      "capability_tags": [
+        "code",
+        "refactor"
+      ],
+      "target_objects": [
+        "cli",
+        "github",
+        "repository"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='autonomous-ai-agents', desc='Delegate coding to OpenAI Codex CLI (features, PRs).'"
+    },
+    {
+      "name": "comfyui",
+      "original_category": "creative",
+      "original_tags": [
+        "comfyui",
+        "image-generation",
+        "stable-diffusion",
+        "flux",
+        "sd3",
+        "wan-video",
+        "hunyuan-video",
+        "creative",
+        "generative-ai",
+        "video-generation"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "software_development",
+        "productivity_automation"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "audio",
+        "cli",
+        "image",
+        "video"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: creative_generation (conf=1.00) based on category='creative', desc='Generate images, video, and audio with ComfyUI — install, la'"
+    },
+    {
+      "name": "comma-todo-reminder",
+      "original_category": "productivity",
+      "original_tags": [],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: productivity_automation (conf=0.70) based on category='productivity', desc='用户用 \"、\" 开头时，区分宣告类（我得xxx）和待办类（xxx得做了），分别 20 分钟/30 分钟后提醒一次'"
+    },
+    {
+      "name": "competitive-intelligence",
+      "original_category": "research",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "software_development",
+        "integrations_services"
+      ],
+      "capability_tags": [
+        "analyze",
+        "extract",
+        "search"
+      ],
+      "target_objects": [
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.55,
+      "reason": "Primary: research_knowledge (conf=0.55) based on category='research', desc='Systematic competitive landscape analysis — identify competi'"
+    },
+    {
+      "name": "content-creator-video-pipeline",
+      "original_category": "content-creator-video-pipeline",
+      "original_tags": [],
+      "primary_category": "creative_generation",
+      "secondary_categories": [],
+      "capability_tags": [],
+      "target_objects": [
+        "markdown"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.5,
+      "reason": "Primary: creative_generation (conf=0.50) based on category='content-creator-video-pipeline', desc='帮助文字创作者（B站/公众号）规划文字→视频管线。核心理念：AI做苦力，人做创作，彻底去AI味。覆盖学术类和文艺评论/思'"
+    },
+    {
+      "name": "conversation-data-enrichment",
+      "original_category": "research",
+      "original_tags": [],
+      "primary_category": "data_science",
+      "secondary_categories": [
+        "software_development"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: data_science — build tools that enrich conversation log data with LLM-generated metadata (tone, depth, tags, intention)."
+    },
+    {
+      "name": "conversational-intelligence",
+      "original_category": "research",
+      "original_tags": [],
+      "primary_category": "specialized_domain",
+      "secondary_categories": [
+        "research_knowledge",
+        "productivity_automation"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: specialized_domain — proactive recall and pattern-aware agent behavior: belief tracking, wiki association, action protocols."
+    },
+    {
+      "name": "cooking-science",
+      "original_category": "food-science",
+      "original_tags": [],
+      "primary_category": "specialized_domain",
+      "secondary_categories": [
+        "software_development",
+        "research_knowledge"
+      ],
+      "capability_tags": [
+        "browse",
+        "search"
+      ],
+      "target_objects": [
+        "browser",
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.65,
+      "reason": "Primary: specialized_domain (conf=0.65) based on category='food-science', desc='用户叫查菜谱时：①搜做法 ②对照 cooking-principles.md 的10条原理③逐条标注✅/❌/⚠️（都市传'"
+    },
+    {
+      "name": "cron-workflows",
+      "original_category": "devops",
+      "original_tags": [],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "data_science",
+        "specialized_domain"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.65,
+      "reason": "Primary: devops_infrastructure (conf=0.65) based on category='devops', desc='Reliable cron job patterns: no-agent scripts, wrapper script'"
+    },
+    {
+      "name": "debugging-hermes-tui-commands",
+      "original_category": "software-development",
+      "original_tags": [
+        "debugging",
+        "hermes-agent",
+        "tui",
+        "slash-commands",
+        "typescript",
+        "python"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "specialized_domain",
+        "creative_generation"
+      ],
+      "capability_tags": [
+        "debug"
+      ],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: software_development (conf=0.80) based on category='software-development', desc='Debug Hermes TUI slash commands: Python, gateway, Ink UI.'"
+    },
+    {
+      "name": "deep-web-research",
+      "original_category": "research",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "integrations_services"
+      ],
+      "capability_tags": [
+        "extract",
+        "search"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.9,
+      "reason": "Primary: research_knowledge (conf=0.90) based on category='research', desc='深度网络研究——用 Exa（或其他搜索 API）直接调 API 做论文级搜索，拉全文，而不用 web_search 的浅'"
+    },
+    {
+      "name": "demo-hello",
+      "original_category": "productivity",
+      "original_tags": [
+        "demo",
+        "tutorial",
+        "hello-world"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "productivity_automation"
+      ],
+      "capability_tags": [
+        "code"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: software_development — template for creating MUSE-compliant demo skills. Skill development template."
+    },
+    {
+      "name": "design-md",
+      "original_category": "creative",
+      "original_tags": [
+        "design",
+        "design-system",
+        "tokens",
+        "ui",
+        "accessibility",
+        "wcag",
+        "tailwind",
+        "dtcg",
+        "google"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "software_development",
+        "data_science"
+      ],
+      "capability_tags": [
+        "code"
+      ],
+      "target_objects": [
+        "cli",
+        "markdown"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": true,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: creative_generation (conf=0.85) based on category='creative', desc='Author/validate/export Google's DESIGN.md token spec files.'"
+    },
+    {
+      "name": "diy-nas-setup",
+      "original_category": "devops",
+      "original_tags": [
+        "nas",
+        "storage",
+        "ubuntu",
+        "mergerfs",
+        "snapraid",
+        "samba"
+      ],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "software_development",
+        "specialized_domain"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.9,
+      "reason": "Primary: devops_infrastructure (conf=0.90) based on category='devops', desc='Set up a DIY NAS on Ubuntu in ~15 lines: mergerfs (pool mixe'"
+    },
+    {
+      "name": "docker-media-stack",
+      "original_category": "uncategorized",
+      "original_tags": [],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "software_development"
+      ],
+      "capability_tags": [
+        "deploy",
+        "edit"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: devops_infrastructure — deploy and configure Docker media stack (Jellyfin + qBittorrent + arr) with GFW proxy setup."
+    },
+    {
+      "name": "dogfood",
+      "original_category": "dogfood",
+      "original_tags": [
+        "qa",
+        "testing",
+        "browser",
+        "web",
+        "dogfood"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "specialized_domain",
+        "desktop_control"
+      ],
+      "capability_tags": [
+        "browse"
+      ],
+      "target_objects": [
+        "browser",
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.55,
+      "reason": "Primary: software_development (conf=0.55) based on category='dogfood', desc='Exploratory QA of web apps: find bugs, evidence, reports.'"
+    },
+    {
+      "name": "dspy",
+      "original_category": "mlops",
+      "original_tags": [
+        "Prompt Engineering",
+        "DSPy",
+        "Declarative Programming",
+        "RAG",
+        "Agents",
+        "Prompt Optimization",
+        "LM Programming",
+        "Stanford NLP",
+        "Automatic Optimization",
+        "Modular AI"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "specialized_domain",
+        "data_science"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.55,
+      "reason": "Primary: software_development (conf=0.55) based on category='mlops', desc='DSPy: declarative LM programs, auto-optimize prompts, RAG.'"
+    },
+    {
+      "name": "evaluating-llms-harness",
+      "original_category": "mlops",
+      "original_tags": [
+        "Evaluation",
+        "LM Evaluation Harness",
+        "Benchmarking",
+        "MMLU",
+        "HumanEval",
+        "GSM8K",
+        "EleutherAI",
+        "Model Quality",
+        "Academic Benchmarks",
+        "Industry Standard"
+      ],
+      "primary_category": "data_science",
+      "secondary_categories": [
+        "specialized_domain",
+        "creative_generation"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.55,
+      "reason": "Primary: data_science (conf=0.55) based on category='mlops', desc='lm-eval-harness: benchmark LLMs (MMLU, GSM8K, etc.).'"
+    },
+    {
+      "name": "excalidraw",
+      "original_category": "creative",
+      "original_tags": [
+        "Excalidraw",
+        "Diagrams",
+        "Flowcharts",
+        "Architecture",
+        "Visualization",
+        "JSON"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "specialized_domain",
+        "integrations_services"
+      ],
+      "capability_tags": [
+        "edit"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.5,
+      "reason": "Primary: creative_generation (conf=0.50) based on category='creative', desc='Hand-drawn Excalidraw JSON diagrams (arch, flow, seq).'"
+    },
+    {
+      "name": "fastmcp-server",
+      "original_category": "mcp",
+      "original_tags": [],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "software_development",
+        "devops_infrastructure"
+      ],
+      "capability_tags": [
+        "deploy"
+      ],
+      "target_objects": [
+        "cli",
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: integrations_services (conf=0.70) based on category='mcp', desc='Build, deploy, and operate custom FastMCP SSE/HTTP servers —'"
+    },
+    {
+      "name": "findmy",
+      "original_category": "apple",
+      "original_tags": [
+        "FindMy",
+        "AirTag",
+        "location",
+        "tracking",
+        "macOS",
+        "Apple"
+      ],
+      "primary_category": "desktop_control",
+      "secondary_categories": [
+        "specialized_domain",
+        "software_development"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: desktop_control (conf=0.80) based on category='apple', desc='Track Apple devices/AirTags via FindMy.app on macOS.'"
+    },
+    {
+      "name": "frontend-visual-debugging",
+      "original_category": "software-development",
+      "original_tags": [
+        "browser",
+        "debugging",
+        "css",
+        "animation",
+        "frontend",
+        "html-game",
+        "visual"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "data_science",
+        "specialized_domain"
+      ],
+      "capability_tags": [
+        "browse",
+        "debug",
+        "edit"
+      ],
+      "target_objects": [
+        "browser"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.75,
+      "reason": "Primary: software_development (conf=0.75) based on category='software-development', desc='Debug visual/behavioral issues in web UIs, HTML games, and C'"
+    },
+    {
+      "name": "game-design-architectural-critique",
+      "original_category": "creative",
+      "original_tags": [],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "specialized_domain",
+        "software_development"
+      ],
+      "capability_tags": [
+        "analyze"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.65,
+      "reason": "Primary: creative_generation (conf=0.65) based on category='creative', desc='Game design analysis by identifying the gap between conceptu'"
+    },
+    {
+      "name": "gao-economic-logic",
+      "original_category": "gao-economic-logic",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "specialized_domain"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: research_knowledge — knowledge base from economic logic book. Economic analysis frameworks and causal inference methods."
+    },
+    {
+      "name": "gif-search",
+      "original_category": "media",
+      "original_tags": [
+        "GIF",
+        "Media",
+        "Search",
+        "Tenor",
+        "API",
+        "Sticker",
+        "Meme",
+        "Image"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "software_development",
+        "research_knowledge"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [
+        "image"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: creative_generation (conf=0.70) based on category='media', desc='Search and send visual content in chat — GIFs (via Tenor), g'"
+    },
+    {
+      "name": "github-auth",
+      "original_category": "github",
+      "original_tags": [
+        "GitHub",
+        "Authentication",
+        "Git",
+        "gh-cli",
+        "SSH",
+        "Setup"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "integrations_services",
+        "devops_infrastructure"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli",
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='github', desc='GitHub auth setup: HTTPS tokens, SSH keys, gh CLI login.'"
+    },
+    {
+      "name": "github-code-review",
+      "original_category": "github",
+      "original_tags": [
+        "GitHub",
+        "Code-Review",
+        "Pull-Requests",
+        "Git",
+        "Quality"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "specialized_domain",
+        "desktop_control"
+      ],
+      "capability_tags": [
+        "code"
+      ],
+      "target_objects": [
+        "github",
+        "repository"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='github', desc='Review PRs: diffs, inline comments via gh or REST.'"
+    },
+    {
+      "name": "github-issues",
+      "original_category": "github",
+      "original_tags": [
+        "GitHub",
+        "Issues",
+        "Project-Management",
+        "Bug-Tracking",
+        "Triage"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "integrations_services",
+        "research_knowledge"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.9,
+      "reason": "Primary: software_development (conf=0.90) based on category='github', desc='Create, triage, label, assign GitHub issues via gh or REST.'"
+    },
+    {
+      "name": "github-pr-workflow",
+      "original_category": "github",
+      "original_tags": [
+        "GitHub",
+        "Pull-Requests",
+        "CI/CD",
+        "Git",
+        "Automation",
+        "Merge"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "integrations_services",
+        "desktop_control"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "github",
+        "repository"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='github', desc='GitHub PR lifecycle: branch, commit, open, CI, merge.'"
+    },
+    {
+      "name": "github-repo-management",
+      "original_category": "github",
+      "original_tags": [
+        "GitHub",
+        "Repositories",
+        "Git",
+        "Releases",
+        "Secrets",
+        "Configuration"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "desktop_control",
+        "specialized_domain"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli",
+        "github",
+        "repository"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: software_development (conf=0.85) based on category='github', desc='Clone/create/fork repos; manage remotes, releases.'"
+    },
+    {
+      "name": "godmode",
+      "original_category": "red-teaming",
+      "original_tags": [
+        "jailbreak",
+        "red-teaming",
+        "G0DM0D3",
+        "Parseltongue",
+        "GODMODE",
+        "uncensoring",
+        "safety-bypass",
+        "prompt-engineering",
+        "L1B3RT4S"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "integrations_services",
+        "specialized_domain"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.5,
+      "reason": "Primary: software_development (conf=0.50) based on category='red-teaming', desc='Jailbreak LLMs: Parseltongue, GODMODE, ULTRAPLINIAN.'"
+    },
+    {
+      "name": "google-workspace",
+      "original_category": "productivity",
+      "original_tags": [
+        "Google",
+        "Gmail",
+        "Calendar",
+        "Drive",
+        "Sheets",
+        "Docs",
+        "Contacts",
+        "Email",
+        "OAuth"
+      ],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "productivity_automation"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": true,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: integrations_services — Gmail, Calendar, Drive, Docs, Sheets via gws CLI or Python with OAuth."
+    },
+    {
+      "name": "hardware-concept-prototyping",
+      "original_category": "software-development",
+      "original_tags": [],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "research_knowledge",
+        "specialized_domain"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: software_development (conf=0.80) based on category='software-development', desc='Research existing hardware solutions, open-source firmware, '"
+    },
+    {
+      "name": "heartmula",
+      "original_category": "media",
+      "original_tags": [
+        "music",
+        "audio",
+        "generation",
+        "ai",
+        "heartmula",
+        "heartcodec",
+        "lyrics",
+        "songs"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "research_knowledge",
+        "specialized_domain"
+      ],
+      "capability_tags": [
+        "code"
+      ],
+      "target_objects": [
+        "audio"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: creative_generation (conf=1.00) based on category='media', desc='HeartMuLa: Suno-like song generation from lyrics + tags.'"
+    },
+    {
+      "name": "hermes-agent",
+      "original_category": "autonomous-ai-agents",
+      "original_tags": [
+        "hermes",
+        "setup",
+        "configuration",
+        "multi-agent",
+        "spawning",
+        "cli",
+        "gateway",
+        "development"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "integrations_services",
+        "devops_infrastructure"
+      ],
+      "capability_tags": [
+        "code",
+        "search"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: software_development — configure, extend, or contribute to Hermes Agent framework. CLI reference and configuration guide."
+    },
+    {
+      "name": "hermes-agent-skill-authoring",
+      "original_category": "software-development",
+      "original_tags": [
+        "skills",
+        "authoring",
+        "hermes-agent",
+        "conventions",
+        "skill-md"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "productivity_automation"
+      ],
+      "capability_tags": [
+        "write"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": true,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: software_development — author in-repo SKILL.md files: frontmatter, validator, structure conventions."
+    },
+    {
+      "name": "hermes-gateway-operations",
+      "original_category": "devops",
+      "original_tags": [],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "desktop_control",
+        "software_development"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: devops_infrastructure — operation, maintenance, and troubleshooting of the Hermes messaging gateway."
+    },
+    {
+      "name": "hermes-gateway-troubleshooting",
+      "original_category": "devops",
+      "original_tags": [
+        "hermes",
+        "gateway",
+        "troubleshooting",
+        "network",
+        "proxy",
+        "weixin",
+        "windows"
+      ],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "desktop_control",
+        "software_development"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": true,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: devops_infrastructure — diagnose and fix Hermes gateway connectivity issues."
+    },
+    {
+      "name": "hermes-mcp-setup",
+      "original_category": "mcp",
+      "original_tags": [
+        "MCP",
+        "Windows",
+        "Hermes-Config"
+      ],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "devops_infrastructure",
+        "desktop_control"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.75,
+      "reason": "Primary: integrations_services (conf=0.75) based on category='mcp', desc='实例 MCP 配置管理——安装、配置、验证、排错 7 个 MCP'"
+    },
+    {
+      "name": "hermes-media-delivery",
+      "original_category": "software-development",
+      "original_tags": [
+        "hermes",
+        "gateway",
+        "media",
+        "delivery",
+        "weixin",
+        "feishu",
+        "telegram",
+        "windows"
+      ],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "desktop_control",
+        "software_development"
+      ],
+      "capability_tags": [
+        "extract"
+      ],
+      "target_objects": [
+        "image"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: devops_infrastructure — patterns and pitfalls for sending files through Hermes messaging gateway."
+    },
+    {
+      "name": "hermes-plugin-authoring",
+      "original_category": "software-development",
+      "original_tags": [
+        "hermes",
+        "plugin",
+        "development",
+        "authoring"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "specialized_domain",
+        "data_science"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": true,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.55,
+      "reason": "Primary: software_development (conf=0.55) based on category='software-development', desc='Build, test, and publish Hermes Agent plugins. Register CLI '"
+    },
+    {
+      "name": "hermes-provider-config",
+      "original_category": "software-development",
+      "original_tags": [
+        "hermes",
+        "configuration",
+        "providers",
+        "api-keys",
+        "windows",
+        "setup"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "desktop_control",
+        "integrations_services"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.75,
+      "reason": "Primary: software_development (conf=0.75) based on category='software-development', desc='Configure AI model providers and API keys in Hermes Agent on'"
+    },
+    {
+      "name": "hermes-s6-container-supervision",
+      "original_category": "software-development",
+      "original_tags": [
+        "docker",
+        "s6",
+        "supervision",
+        "gateway",
+        "profiles"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "creative_generation",
+        "devops_infrastructure"
+      ],
+      "capability_tags": [
+        "debug"
+      ],
+      "target_objects": [
+        "image"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.65,
+      "reason": "Primary: software_development (conf=0.65) based on category='software-development', desc='Modify, debug, or extend the s6-overlay supervision tree ins'"
+    },
+    {
+      "name": "himalaya",
+      "original_category": "email",
+      "original_tags": [
+        "Email",
+        "IMAP",
+        "SMTP",
+        "CLI",
+        "Communication"
+      ],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [
+        "integrations_services"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": true,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: productivity_automation — Himalaya CLI: IMAP/SMTP email management from terminal."
+    },
+    {
+      "name": "huggingface-hub",
+      "original_category": "mlops",
+      "original_tags": [],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "data_science",
+        "software_development"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: integrations_services — HuggingFace hf CLI: search, download, upload models, datasets. External ML platform integration."
+    },
+    {
+      "name": "humanizer",
+      "original_category": "creative",
+      "original_tags": [
+        "writing",
+        "editing",
+        "humanize",
+        "anti-ai-slop",
+        "voice",
+        "prose",
+        "text"
+      ],
+      "primary_category": "writing_editing",
+      "secondary_categories": [
+        "desktop_control",
+        "research_knowledge"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.55,
+      "reason": "Primary: writing_editing (conf=0.55) based on category='creative', desc='Humanize text: strip AI-isms and add real voice.'"
+    },
+    {
+      "name": "ideation",
+      "original_category": "creative",
+      "original_tags": [
+        "Creative",
+        "Ideation",
+        "Projects",
+        "Brainstorming",
+        "Inspiration"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "software_development"
+      ],
+      "capability_tags": [
+        "code"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "mcp",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.5,
+      "reason": "Primary: creative_generation (conf=0.50) based on category='creative', desc='Generate project ideas via creative constraints.'"
+    },
+    {
+      "name": "imessage",
+      "original_category": "apple",
+      "original_tags": [
+        "iMessage",
+        "SMS",
+        "messaging",
+        "macOS",
+        "Apple"
+      ],
+      "primary_category": "desktop_control",
+      "secondary_categories": [
+        "software_development",
+        "specialized_domain"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: desktop_control (conf=0.80) based on category='apple', desc='Send and receive iMessages/SMS via the imsg CLI on macOS.'"
+    },
+    {
+      "name": "information-grounding",
+      "original_category": "research",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "productivity_automation"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: research_knowledge — verify web-sourced information against common sense, law, physics before presenting."
+    },
+    {
+      "name": "infra-status",
+      "original_category": "devops",
+      "original_tags": [
+        "infra",
+        "nas",
+        "mcp",
+        "health",
+        "status"
+      ],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "integrations_services",
+        "specialized_domain"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "mcp",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.9,
+      "reason": "Primary: devops_infrastructure (conf=0.90) based on category='devops', desc='Quick infrastructure status check: NAS, MCP servers, disk, s'"
+    },
+    {
+      "name": "jellyfin-repair",
+      "original_category": "devops",
+      "original_tags": [],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "specialized_domain",
+        "desktop_control"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.6,
+      "reason": "Primary: devops_infrastructure (conf=0.60) based on category='devops', desc='Jellyfin 运维修复 skill：DB 架构理解、备份流程、容器重建、库丢失恢复、DB 损坏修复、scope 管控'"
+    },
+    {
+      "name": "jupyter-live-kernel",
+      "original_category": "data-science",
+      "original_tags": [
+        "jupyter",
+        "notebook",
+        "repl",
+        "data-science",
+        "exploration",
+        "iterative"
+      ],
+      "primary_category": "data_science",
+      "secondary_categories": [
+        "specialized_domain",
+        "software_development"
+      ],
+      "capability_tags": [
+        "code"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: data_science (conf=1.00) based on category='data-science', desc='Iterative Python via live Jupyter kernel (hamelnb).'"
+    },
+    {
+      "name": "kage-web-freezer",
+      "original_category": "devops",
+      "original_tags": [
+        "web",
+        "archive",
+        "offline",
+        "docker",
+        "static-site"
+      ],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "software_development",
+        "data_science"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli",
+        "github",
+        "image"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.55,
+      "reason": "Primary: devops_infrastructure (conf=0.55) based on category='devops', desc='Freeze any webpage into an offline-readable static version u'"
+    },
+    {
+      "name": "kanban-codex-lane",
+      "original_category": "autonomous-ai-agents",
+      "original_tags": [
+        "kanban",
+        "codex",
+        "worktrees",
+        "autonomous-agents",
+        "prediction-market-bot"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "specialized_domain",
+        "creative_generation"
+      ],
+      "capability_tags": [
+        "code",
+        "monitor",
+        "write"
+      ],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: software_development (conf=0.85) based on category='autonomous-ai-agents', desc='Use when a Hermes Kanban worker wants to run Codex CLI as an'"
+    },
+    {
+      "name": "kanban-orchestrator",
+      "original_category": "devops",
+      "original_tags": [
+        "kanban",
+        "multi-agent",
+        "orchestration",
+        "routing"
+      ],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [
+        "software_development",
+        "devops_infrastructure"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.75,
+      "reason": "Primary: productivity_automation — decomposition playbook for orchestrator routing work through Kanban multi-agent system."
+    },
+    {
+      "name": "kanban-worker",
+      "original_category": "devops",
+      "original_tags": [
+        "kanban",
+        "multi-agent",
+        "collaboration",
+        "workflow",
+        "pitfalls"
+      ],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [
+        "software_development",
+        "devops_infrastructure"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.75,
+      "reason": "Primary: productivity_automation — pitfalls and edge cases for Hermes Kanban workers. Multi-agent workflow patterns."
+    },
+    {
+      "name": "linear",
+      "original_category": "productivity",
+      "original_tags": [
+        "Linear",
+        "Project Management",
+        "Issues",
+        "GraphQL",
+        "API",
+        "Productivity"
+      ],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "software_development",
+        "devops_infrastructure"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.65,
+      "reason": "Primary: integrations_services (conf=0.65) based on category='productivity', desc='Linear: manage issues, projects, teams via GraphQL + curl.'"
+    },
+    {
+      "name": "linux-command-ref",
+      "original_category": "linux-command-ref",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "devops_infrastructure"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: research_knowledge — Linux command reference based on GitHub high-star projects. Knowledge/reference material."
+    },
+    {
+      "name": "llama-cpp",
+      "original_category": "mlops",
+      "original_tags": [
+        "llama.cpp",
+        "GGUF",
+        "Quantization",
+        "Hugging Face Hub",
+        "CPU Inference",
+        "Apple Silicon",
+        "Edge Deployment",
+        "AMD GPUs",
+        "Intel GPUs",
+        "NVIDIA",
+        "URL-first"
+      ],
+      "primary_category": "data_science",
+      "secondary_categories": [
+        "software_development",
+        "research_knowledge"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [
+        "cli",
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: data_science — llama.cpp local GGUF inference + HF Hub model discovery. Local ML model execution."
+    },
+    {
+      "name": "llm-wiki",
+      "original_category": "research",
+      "original_tags": [
+        "wiki",
+        "knowledge-base",
+        "research",
+        "notes",
+        "markdown",
+        "rag-alternative"
+      ],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "software_development",
+        "desktop_control"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "github",
+        "markdown"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: research_knowledge (conf=1.00) based on category='research', desc='Karpathy's LLM Wiki: build/query interlinked markdown KB.'"
+    },
+    {
+      "name": "local-web-dev-testing",
+      "original_category": "software-development",
+      "original_tags": [],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "desktop_control",
+        "specialized_domain"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.6,
+      "reason": "Primary: software_development (conf=0.60) based on category='software-development', desc='在 Hermes 环境中设置、启动和测试本地 Web 项目（Vite/React/纯前端）的流程， 包括浏览器测试、np'"
+    },
+    {
+      "name": "macos-computer-use",
+      "original_category": "desktop",
+      "original_tags": [
+        "computer-use",
+        "macos",
+        "desktop",
+        "automation",
+        "gui"
+      ],
+      "primary_category": "desktop_control",
+      "secondary_categories": [
+        "specialized_domain",
+        "software_development"
+      ],
+      "capability_tags": [
+        "edit"
+      ],
+      "target_objects": [
+        "cli",
+        "desktop"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: desktop_control (conf=1.00) based on category='desktop', desc='Drive the macOS desktop in the background — screenshots, mou'"
+    },
+    {
+      "name": "manim-video",
+      "original_category": "creative",
+      "original_tags": [],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "desktop_control",
+        "specialized_domain"
+      ],
+      "capability_tags": [
+        "edit"
+      ],
+      "target_objects": [
+        "video"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: creative_generation (conf=0.80) based on category='creative', desc='Manim CE animations: 3Blue1Brown math/algo videos.'"
+    },
+    {
+      "name": "maps",
+      "original_category": "productivity",
+      "original_tags": [
+        "maps",
+        "geocoding",
+        "places",
+        "routing",
+        "distance",
+        "directions",
+        "nearby",
+        "location",
+        "openstreetmap",
+        "nominatim",
+        "overpass",
+        "osrm"
+      ],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [
+        "integrations_services"
+      ],
+      "capability_tags": [
+        "code"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: productivity_automation — geocode, POIs, routes, timezones via OpenStreetMap/OSRM. Location intelligence."
+    },
+    {
+      "name": "mcp-project-discovery",
+      "original_category": "devops",
+      "original_tags": [
+        "mcp",
+        "filesystem",
+        "everything",
+        "discovery",
+        "workflow"
+      ],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "software_development",
+        "research_knowledge"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.55,
+      "reason": "Primary: integrations_services (conf=0.55) based on category='devops', desc='Rapidly discover and explore projects on the user's machine '"
+    },
+    {
+      "name": "meal-planning",
+      "original_category": "productivity",
+      "original_tags": [],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [
+        "research_knowledge"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "markdown"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: productivity_automation — manage personal recipe library (wiki storage) and recommend dishes based on fridge ingredients."
+    },
+    {
+      "name": "minecraft-modpack-server",
+      "original_category": "gaming",
+      "original_tags": [],
+      "primary_category": "specialized_domain",
+      "secondary_categories": [
+        "devops_infrastructure"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: specialized_domain — host modded Minecraft servers (CurseForge, Modrinth). Gaming-specific infrastructure."
+    },
+    {
+      "name": "minimal-change-engineer",
+      "original_category": "software-development",
+      "original_tags": [
+        "refactoring",
+        "minimal-diff",
+        "code-review",
+        "scope-control",
+        "discipline"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "desktop_control"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.75,
+      "reason": "Primary: software_development (conf=0.75) based on category='software-development', desc='Deliver minimal diffs: fix only what's asked, reject scope c'"
+    },
+    {
+      "name": "model-switcher",
+      "original_category": "productivity",
+      "original_tags": [],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [
+        "integrations_services"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: productivity_automation — model switching + auxiliary vision configuration for WeChat gateway users."
+    },
+    {
+      "name": "moviepilot-ops",
+      "original_category": "moviepilot-ops",
+      "original_tags": [],
+      "primary_category": "specialized_domain",
+      "secondary_categories": [
+        "integrations_services",
+        "devops_infrastructure"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: specialized_domain (conf=0.80) based on category='moviepilot-ops', desc='MoviePilot 运行维护与排障——认证、搜索、订阅、洗版阻断、MCP连通性、pt-tools联动'"
+    },
+    {
+      "name": "muse-skill-lifecycle",
+      "original_category": "software-development",
+      "original_tags": [],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "productivity_automation"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: software_development — MUSE skill lifecycle management: create, manage, evaluate, refine. Meta-skill standards."
+    },
+    {
+      "name": "nano-pdf",
+      "original_category": "productivity",
+      "original_tags": [
+        "PDF",
+        "Documents",
+        "Editing",
+        "NLP",
+        "Productivity"
+      ],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [
+        "software_development"
+      ],
+      "capability_tags": [
+        "edit"
+      ],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: productivity_automation — edit PDF text via nano-pdf CLI with natural-language instructions."
+    },
+    {
+      "name": "nas-daily-maintenance",
+      "original_category": "devops",
+      "original_tags": [
+        "nas",
+        "qbittorrent",
+        "jellyfin",
+        "lajidui",
+        "pt",
+        "daily",
+        "cron",
+        "smart",
+        "monitoring"
+      ],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "software_development",
+        "specialized_domain"
+      ],
+      "capability_tags": [
+        "extract"
+      ],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.95,
+      "reason": "Primary: devops_infrastructure (conf=0.95) based on category='devops', desc='Use when setting up or running daily NAS media library maint'"
+    },
+    {
+      "name": "nas-download",
+      "original_category": "devops",
+      "original_tags": [
+        "nas",
+        "qbittorrent",
+        "download",
+        "pt",
+        "moviepilot"
+      ],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "specialized_domain",
+        "integrations_services"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: devops_infrastructure (conf=0.80) based on category='devops', desc='一键搜索下载到 NAS qBittorrent。用户说'帮我下XXX'时加载。三步走：搜索→检查→加种。'"
+    },
+    {
+      "name": "nas-fix",
+      "original_category": "devops",
+      "original_tags": [
+        "nas",
+        "troubleshooting",
+        "wg",
+        "docker",
+        "qbittorrent"
+      ],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "specialized_domain",
+        "integrations_services"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: devops_infrastructure (conf=1.00) based on category='devops', desc='NAS 自动排障。用户说'不行了/连不上/挂了'时加载。决策树：SSH→WG→Docker→磁盘→qB→Clash。修好'"
+    },
+    {
+      "name": "nas-investigation-workflow",
+      "original_category": "nas-investigation-workflow",
+      "original_tags": [],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "integrations_services",
+        "productivity_automation"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: devops_infrastructure (conf=0.85) based on category='nas-investigation-workflow', desc='排查 NAS 相关问题时的工作流：MCP 工具优先 → 失败诊断 → SSH 兜底 → MCP 恢复后重试'"
+    },
+    {
+      "name": "nas-media-stack",
+      "original_category": "devops",
+      "original_tags": [],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "specialized_domain",
+        "software_development"
+      ],
+      "capability_tags": [
+        "deploy"
+      ],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.95,
+      "reason": "Primary: devops_infrastructure (conf=0.95) based on category='devops', desc='Docker NAS stack — media (Jellyfin + MoviePilot/pt-tools + q'"
+    },
+    {
+      "name": "nas-seed",
+      "original_category": "devops",
+      "original_tags": [
+        "nas",
+        "qbittorrent",
+        "seed",
+        "report",
+        "monitoring"
+      ],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "specialized_domain",
+        "integrations_services"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": true,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: devops_infrastructure (conf=1.00) based on category='devops', desc='NAS 做种/下载状态报告。用户说'看看/种子/做种/下载情况'时加载。优先用 MCP，回退 SSH。'"
+    },
+    {
+      "name": "native-mcp",
+      "original_category": "mcp",
+      "original_tags": [
+        "MCP",
+        "Tools",
+        "Integrations"
+      ],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "software_development",
+        "devops_infrastructure"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli",
+        "database",
+        "github",
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.9,
+      "reason": "Primary: integrations_services (conf=0.90) based on category='mcp', desc='MCP client: connect servers, register tools (stdio/HTTP).'"
+    },
+    {
+      "name": "node-inspect-debugger",
+      "original_category": "software-development",
+      "original_tags": [
+        "debugging",
+        "nodejs",
+        "node-inspect",
+        "cdp",
+        "breakpoints",
+        "ui-tui"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "specialized_domain",
+        "desktop_control"
+      ],
+      "capability_tags": [
+        "debug"
+      ],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='software-development', desc='Debug Node.js via --inspect + Chrome DevTools Protocol CLI.'"
+    },
+    {
+      "name": "notion",
+      "original_category": "productivity",
+      "original_tags": [
+        "Notion",
+        "Productivity",
+        "Notes",
+        "Database",
+        "API",
+        "CLI",
+        "Workers"
+      ],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "desktop_control",
+        "software_development"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli",
+        "database",
+        "markdown"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: integrations_services (conf=0.70) based on category='productivity', desc='Notion API + ntn CLI: pages, databases, markdown, Workers.'"
+    },
+    {
+      "name": "obliteratus",
+      "original_category": "mlops",
+      "original_tags": [
+        "Abliteration",
+        "Uncensoring",
+        "Refusal-Removal",
+        "LLM",
+        "Weight-Projection",
+        "SVD",
+        "Mechanistic-Interpretability",
+        "HuggingFace",
+        "Model-Surgery"
+      ],
+      "primary_category": "data_science",
+      "secondary_categories": [
+        "software_development"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: data_science — OBLITERATUS: abliterate LLM refusals using diff-in-means, SVD, mechanistic interpretability."
+    },
+    {
+      "name": "obsidian",
+      "original_category": "note-taking",
+      "original_tags": [],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [
+        "research_knowledge",
+        "creative_generation"
+      ],
+      "capability_tags": [
+        "edit",
+        "search"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.55,
+      "reason": "Primary: productivity_automation (conf=0.55) based on category='note-taking', desc='Read, search, create, and edit notes in the Obsidian vault.'"
+    },
+    {
+      "name": "ocr-and-documents",
+      "original_category": "productivity",
+      "original_tags": [
+        "PDF",
+        "Documents",
+        "Research",
+        "Arxiv",
+        "Text-Extraction",
+        "OCR"
+      ],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [
+        "research_knowledge"
+      ],
+      "capability_tags": [
+        "extract"
+      ],
+      "target_objects": [
+        "markdown"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.75,
+      "reason": "Primary: productivity_automation — extract text from PDFs/scans (pymupdf, marker-pdf). Document processing utility."
+    },
+    {
+      "name": "open-source-tool-setup",
+      "original_category": "software-development",
+      "original_tags": [],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "desktop_control",
+        "research_knowledge"
+      ],
+      "capability_tags": [
+        "browse"
+      ],
+      "target_objects": [
+        "browser",
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "browser_session",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": true,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.5,
+      "reason": "Primary: software_development (conf=0.50) based on category='software-development', desc='Clone, install dependencies for, and configure open-source P'"
+    },
+    {
+      "name": "opencli",
+      "original_category": "autonomous-ai-agents",
+      "original_tags": [
+        "opencli",
+        "browser-automation",
+        "edge",
+        "chrome",
+        "captcha",
+        "geetest"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "specialized_domain",
+        "creative_generation"
+      ],
+      "capability_tags": [
+        "browse",
+        "code",
+        "extract"
+      ],
+      "target_objects": [
+        "browser",
+        "cli",
+        "github",
+        "image",
+        "website"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: software_development (conf=0.70) based on category='autonomous-ai-agents', desc='jackwener/OpenCLI — browser automation bridge: turn any webs'"
+    },
+    {
+      "name": "opencli-cookie-extract",
+      "original_category": "devops",
+      "original_tags": [
+        "cookie",
+        "opencli",
+        "browser",
+        "automation",
+        "httpOnly",
+        "devops"
+      ],
+      "primary_category": "scraping_extraction",
+      "secondary_categories": [
+        "software_development",
+        "specialized_domain"
+      ],
+      "capability_tags": [
+        "browse",
+        "extract"
+      ],
+      "target_objects": [
+        "browser",
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: scraping_extraction (conf=0.80) based on category='devops', desc='Use when you need httpOnly/session cookies from a browser wh'"
+    },
+    {
+      "name": "opencli-site-patterns",
+      "original_category": "autonomous-ai-agents",
+      "original_tags": [
+        "opencli",
+        "browser-automation",
+        "scraping",
+        "xiaohongshu",
+        "bilibili",
+        "taobao",
+        "pt"
+      ],
+      "primary_category": "scraping_extraction",
+      "secondary_categories": [
+        "web_browser",
+        "software_development"
+      ],
+      "capability_tags": [
+        "browse",
+        "extract"
+      ],
+      "target_objects": [
+        "browser",
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: scraping_extraction — site-specific extraction recipes for Xiaohongshu, Bilibili, Taobao, PT sites via opencli browser automation."
+    },
+    {
+      "name": "opencode",
+      "original_category": "autonomous-ai-agents",
+      "original_tags": [
+        "Coding-Agent",
+        "OpenCode",
+        "Autonomous",
+        "Refactoring",
+        "Code-Review"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "research_knowledge",
+        "desktop_control"
+      ],
+      "capability_tags": [
+        "code",
+        "refactor"
+      ],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='autonomous-ai-agents', desc='Delegate coding to OpenCode CLI (features, PR review).'"
+    },
+    {
+      "name": "openhue",
+      "original_category": "smart-home",
+      "original_tags": [
+        "Smart-Home",
+        "Hue",
+        "Lights",
+        "IoT",
+        "Automation"
+      ],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "software_development",
+        "specialized_domain"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "cli",
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: integrations_services (conf=0.80) based on category='smart-home', desc='Control Philips Hue lights, scenes, rooms via OpenHue CLI.'"
+    },
+    {
+      "name": "p5js",
+      "original_category": "creative",
+      "original_tags": [
+        "creative-coding",
+        "generative-art",
+        "p5js",
+        "canvas",
+        "interactive",
+        "visualization",
+        "webgl",
+        "shaders",
+        "animation"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "data_science",
+        "software_development"
+      ],
+      "capability_tags": [
+        "browse"
+      ],
+      "target_objects": [
+        "audio",
+        "browser"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.75,
+      "reason": "Primary: creative_generation (conf=0.75) based on category='creative', desc='p5.js sketches: gen art, shaders, interactive, 3D.'"
+    },
+    {
+      "name": "paper-writing-harness",
+      "original_category": "research",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "software_development",
+        "desktop_control"
+      ],
+      "capability_tags": [
+        "analyze",
+        "code",
+        "extract",
+        "search",
+        "write"
+      ],
+      "target_objects": [
+        "paper"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.95,
+      "reason": "Primary: research_knowledge (conf=0.95) based on category='research', desc='Build, audit, and evolve a systematic AI-assisted academic p'"
+    },
+    {
+      "name": "paper-writing-harness-v2",
+      "original_category": "research",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "software_development",
+        "specialized_domain"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [
+        "paper"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.65,
+      "reason": "Primary: research_knowledge (conf=0.65) based on category='research', desc='v2升级版。在v1的棘轮机制基础上，新增Anti-Leakage协议、引用完整性验证、多视角审稿(3 persona)、'"
+    },
+    {
+      "name": "personal-info-pipeline",
+      "original_category": "productivity",
+      "original_tags": [],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [
+        "research_knowledge"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [
+        "rss"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: productivity_automation — set up lightweight habit-driven information pipeline: RSS curation, Miniflux, source discovery."
+    },
+    {
+      "name": "physical-prototyping",
+      "original_category": "creative",
+      "original_tags": [],
+      "primary_category": "specialized_domain",
+      "secondary_categories": [
+        "creative_generation",
+        "software_development"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: specialized_domain — hardware concept prototyping (MCU, IoT, BLE) and 3D print finishing. Physical making domain."
+    },
+    {
+      "name": "pixel-art",
+      "original_category": "creative",
+      "original_tags": [
+        "creative",
+        "pixel-art",
+        "arcade",
+        "snes",
+        "nes",
+        "gameboy",
+        "retro",
+        "image",
+        "video"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "specialized_domain",
+        "software_development"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "image",
+        "video"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: creative_generation (conf=1.00) based on category='creative', desc='Pixel art w/ era palettes (NES, Game Boy, PICO-8).'"
+    },
+    {
+      "name": "plan",
+      "original_category": "software-development",
+      "original_tags": [
+        "planning",
+        "plan-mode",
+        "implementation",
+        "workflow"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "specialized_domain"
+      ],
+      "capability_tags": [
+        "code",
+        "edit",
+        "write"
+      ],
+      "target_objects": [
+        "markdown"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='software-development', desc='Plan mode: write markdown plan to .hermes/plans/, no exec.'"
+    },
+    {
+      "name": "plant-care",
+      "original_category": "productivity",
+      "original_tags": [],
+      "primary_category": "specialized_domain",
+      "secondary_categories": [
+        "research_knowledge"
+      ],
+      "capability_tags": [
+        "analyze"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: specialized_domain — plant care guidance for succulents, roses, morning glories in Guangzhou humid climate."
+    },
+    {
+      "name": "pokemon-player",
+      "original_category": "gaming",
+      "original_tags": [],
+      "primary_category": "specialized_domain",
+      "secondary_categories": [
+        "research_knowledge",
+        "software_development"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: specialized_domain (conf=0.70) based on category='gaming', desc='Play Pokemon via headless emulator + RAM reads.'"
+    },
+    {
+      "name": "polymarket",
+      "original_category": "research",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "integrations_services",
+        "data_science"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": true,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: research_knowledge — query Polymarket prediction markets: prices, orderbooks, history."
+    },
+    {
+      "name": "ponytail",
+      "original_category": "ponytail",
+      "original_tags": [],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "research_knowledge",
+        "creative_generation"
+      ],
+      "capability_tags": [
+        "code",
+        "refactor"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: software_development (conf=0.85) based on category='ponytail', desc='Forces the laziest solution that actually works, simplest, s'"
+    },
+    {
+      "name": "popular-web-designs",
+      "original_category": "creative",
+      "original_tags": [],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "data_science",
+        "integrations_services"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: creative_generation (conf=0.70) based on category='creative', desc='54 real design systems (Stripe, Linear, Vercel) as HTML/CSS.'"
+    },
+    {
+      "name": "powerpoint",
+      "original_category": "productivity",
+      "original_tags": [],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [
+        "creative_generation",
+        "software_development"
+      ],
+      "capability_tags": [
+        "edit",
+        "extract"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: productivity_automation — create, read, edit .pptx decks, slides, notes, templates."
+    },
+    {
+      "name": "pretext",
+      "original_category": "creative",
+      "original_tags": [
+        "creative-coding",
+        "typography",
+        "pretext",
+        "ascii-art",
+        "canvas",
+        "generative",
+        "text-layout",
+        "kinetic-typography"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "software_development",
+        "data_science"
+      ],
+      "capability_tags": [
+        "browse"
+      ],
+      "target_objects": [
+        "browser",
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: creative_generation (conf=0.70) based on category='creative', desc='Use when building creative browser demos with @chenglou/pret'"
+    },
+    {
+      "name": "project-infrastructure-audit",
+      "original_category": "software-development",
+      "original_tags": [],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "devops_infrastructure",
+        "research_knowledge"
+      ],
+      "capability_tags": [
+        "code"
+      ],
+      "target_objects": [
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='software-development', desc='Audit a codebase or project repo for \"harness engineering\" /'"
+    },
+    {
+      "name": "project-setup-and-audit",
+      "original_category": "software-development",
+      "original_tags": [],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "devops_infrastructure",
+        "desktop_control"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "repository"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: software_development (conf=0.80) based on category='software-development', desc='Set up and audit project repositories for AI-assisted develo'"
+    },
+    {
+      "name": "pt-smart-seeder",
+      "original_category": "pt-smart-seeder",
+      "original_tags": [
+        "pt",
+        "qbittorrent",
+        "lajidui",
+        "skyeysnow",
+        "seeding",
+        "automation",
+        "opencli",
+        "dual-scoring",
+        "bonus-exchange"
+      ],
+      "primary_category": "specialized_domain",
+      "secondary_categories": [
+        "creative_generation",
+        "productivity_automation"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: specialized_domain (conf=1.00) based on category='pt-smart-seeder', desc='Smart PT seeding strategy v2: state-driven dual scoring (eff'"
+    },
+    {
+      "name": "python-debugpy",
+      "original_category": "software-development",
+      "original_tags": [
+        "debugging",
+        "python",
+        "pdb",
+        "debugpy",
+        "breakpoints",
+        "dap",
+        "post-mortem"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "research_knowledge",
+        "specialized_domain"
+      ],
+      "capability_tags": [
+        "debug",
+        "edit"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.9,
+      "reason": "Primary: software_development (conf=0.90) based on category='software-development', desc='Debug Python: pdb REPL + debugpy remote (DAP).'"
+    },
+    {
+      "name": "repo-ai-context",
+      "original_category": "software-development",
+      "original_tags": [
+        "documentation",
+        "github",
+        "ai-context",
+        "project-setup",
+        "onboarding"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "desktop_control",
+        "research_knowledge"
+      ],
+      "capability_tags": [
+        "code"
+      ],
+      "target_objects": [
+        "github",
+        "repository"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.9,
+      "reason": "Primary: software_development (conf=0.90) based on category='software-development', desc='Create AI-readable project context files (AI_CONTEXT.md) for'"
+    },
+    {
+      "name": "requesting-code-review",
+      "original_category": "software-development",
+      "original_tags": [
+        "code-review",
+        "security",
+        "verification",
+        "quality",
+        "pre-commit",
+        "auto-fix"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "specialized_domain",
+        "productivity_automation"
+      ],
+      "capability_tags": [
+        "code",
+        "edit"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='software-development', desc='Pre-commit review: security scan, quality gates, auto-fix.'"
+    },
+    {
+      "name": "research-gap-synthesis",
+      "original_category": "research",
+      "original_tags": [
+        "research",
+        "proposal",
+        "literature-review",
+        "gap-analysis",
+        "experimental-design"
+      ],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "specialized_domain",
+        "creative_generation"
+      ],
+      "capability_tags": [
+        "edit",
+        "search"
+      ],
+      "target_objects": [
+        "paper"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: research_knowledge (conf=1.00) based on category='research', desc='Synthesize raw materials (meeting transcripts, literature, d'"
+    },
+    {
+      "name": "research-paper-writing",
+      "original_category": "research",
+      "original_tags": [
+        "Research",
+        "Paper Writing",
+        "Experiments",
+        "ML",
+        "AI",
+        "NeurIPS",
+        "ICML",
+        "ICLR",
+        "ACL",
+        "AAAI",
+        "COLM",
+        "LaTeX",
+        "Citations",
+        "Statistical Analysis"
+      ],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "creative_generation",
+        "data_science"
+      ],
+      "capability_tags": [
+        "monitor",
+        "search",
+        "write"
+      ],
+      "target_objects": [
+        "paper"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: research_knowledge (conf=1.00) based on category='research', desc='Write ML papers for NeurIPS/ICML/ICLR: design→submit.'"
+    },
+    {
+      "name": "segment-anything-model",
+      "original_category": "mlops",
+      "original_tags": [
+        "Multimodal",
+        "Image Segmentation",
+        "Computer Vision",
+        "SAM",
+        "Zero-Shot"
+      ],
+      "primary_category": "data_science",
+      "secondary_categories": [
+        "creative_generation"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "image"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: data_science — SAM: zero-shot image segmentation via points, boxes, masks. Computer vision ML model."
+    },
+    {
+      "name": "serving-llms-vllm",
+      "original_category": "mlops",
+      "original_tags": [
+        "vLLM",
+        "Inference Serving",
+        "PagedAttention",
+        "Continuous Batching",
+        "High Throughput",
+        "Production",
+        "OpenAI API",
+        "Quantization",
+        "Tensor Parallelism"
+      ],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "data_science",
+        "software_development"
+      ],
+      "capability_tags": [
+        "code",
+        "deploy"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: devops_infrastructure — vLLM: high-throughput LLM serving, OpenAI API, quantization, production deployment."
+    },
+    {
+      "name": "shopping-assistant",
+      "original_category": "productivity",
+      "original_tags": [],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [
+        "scraping_extraction",
+        "integrations_services"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "markdown"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: productivity_automation — e-commerce product discovery assistant. Multi-platform search across Taobao, Xianyu, Xiaohongshu."
+    },
+    {
+      "name": "sketch",
+      "original_category": "creative",
+      "original_tags": [
+        "sketch",
+        "mockup",
+        "design",
+        "ui",
+        "prototype",
+        "html",
+        "variants",
+        "exploration",
+        "wireframe",
+        "comparison"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "data_science",
+        "software_development"
+      ],
+      "capability_tags": [
+        "code"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.6,
+      "reason": "Primary: creative_generation (conf=0.60) based on category='creative', desc='Throwaway HTML mockups: 2-3 design variants to compare.'"
+    },
+    {
+      "name": "songsee",
+      "original_category": "media",
+      "original_tags": [
+        "Audio",
+        "Visualization",
+        "Spectrogram",
+        "Music",
+        "Analysis"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "software_development",
+        "specialized_domain"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "audio",
+        "cli",
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.75,
+      "reason": "Primary: creative_generation (conf=0.75) based on category='media', desc='Audio spectrograms/features (mel, chroma, MFCC) via CLI.'"
+    },
+    {
+      "name": "songwriting-and-ai-music",
+      "original_category": "creative",
+      "original_tags": [],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "specialized_domain",
+        "software_development"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: creative_generation (conf=0.70) based on category='creative', desc='Songwriting craft and Suno AI music prompts.'"
+    },
+    {
+      "name": "source-code-deep-dive",
+      "original_category": "research",
+      "original_tags": [
+        "research",
+        "code-analysis",
+        "graphics",
+        "webgl",
+        "shader",
+        "reverse-engineering",
+        "commit-history",
+        "remote-code-review"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "research_knowledge",
+        "desktop_control"
+      ],
+      "capability_tags": [
+        "analyze",
+        "code",
+        "extract"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='research', desc='Deep-dive analysis of open-source projects from source code '"
+    },
+    {
+      "name": "spike",
+      "original_category": "software-development",
+      "original_tags": [
+        "spike",
+        "prototype",
+        "experiment",
+        "feasibility",
+        "throwaway",
+        "exploration",
+        "research",
+        "planning",
+        "mvp",
+        "proof-of-concept"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "research_knowledge",
+        "creative_generation"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "browser_session",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: software_development (conf=0.70) based on category='software-development', desc='Throwaway experiments to validate an idea before build.'"
+    },
+    {
+      "name": "spotify",
+      "original_category": "media",
+      "original_tags": [
+        "spotify",
+        "music",
+        "playback",
+        "playlists",
+        "media"
+      ],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "creative_generation"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: integrations_services — Spotify: play, search, queue, manage playlists and devices via Hermes tools."
+    },
+    {
+      "name": "subagent-driven-development",
+      "original_category": "software-development",
+      "original_tags": [
+        "delegation",
+        "subagent",
+        "implementation",
+        "workflow",
+        "parallel"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "productivity_automation",
+        "desktop_control"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.65,
+      "reason": "Primary: software_development (conf=0.65) based on category='software-development', desc='Execute plans via delegate_task subagents (2-stage review).'"
+    },
+    {
+      "name": "systematic-debugging",
+      "original_category": "software-development",
+      "original_tags": [
+        "debugging",
+        "troubleshooting",
+        "problem-solving",
+        "root-cause",
+        "investigation"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "specialized_domain",
+        "desktop_control"
+      ],
+      "capability_tags": [
+        "debug"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.95,
+      "reason": "Primary: software_development (conf=0.95) based on category='software-development', desc='4-phase root cause debugging: understand bugs before fixing.'"
+    },
+    {
+      "name": "teams-meeting-pipeline",
+      "original_category": "productivity",
+      "original_tags": [
+        "Teams",
+        "Microsoft Graph",
+        "Meetings",
+        "Productivity",
+        "Operations"
+      ],
+      "primary_category": "productivity_automation",
+      "secondary_categories": [
+        "integrations_services",
+        "devops_infrastructure"
+      ],
+      "capability_tags": [
+        "summarize"
+      ],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.75,
+      "reason": "Primary: productivity_automation — operate Teams meeting summary pipeline via Hermes CLI."
+    },
+    {
+      "name": "test-driven-development",
+      "original_category": "software-development",
+      "original_tags": [
+        "testing",
+        "tdd",
+        "development",
+        "quality",
+        "red-green-refactor"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "specialized_domain",
+        "creative_generation"
+      ],
+      "capability_tags": [
+        "code",
+        "refactor",
+        "write"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='software-development', desc='TDD: enforce RED-GREEN-REFACTOR, tests before code.'"
+    },
+    {
+      "name": "think-like-a-cat",
+      "original_category": "software-development",
+      "original_tags": [],
+      "primary_category": "specialized_domain",
+      "secondary_categories": [
+        "research_knowledge"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": true,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: specialized_domain — cat behavior and care skill based on Pam Johnson-Bennett book."
+    },
+    {
+      "name": "touchdesigner-mcp",
+      "original_category": "creative",
+      "original_tags": [
+        "TouchDesigner",
+        "MCP",
+        "twozero",
+        "creative-coding",
+        "real-time-visuals",
+        "generative-art",
+        "audio-reactive",
+        "VJ",
+        "installation",
+        "GLSL"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "integrations_services",
+        "software_development"
+      ],
+      "capability_tags": [
+        "code"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "browser_session",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.95,
+      "reason": "Primary: creative_generation (conf=0.95) based on category='creative', desc='Control a running TouchDesigner instance via twozero MCP — c'"
+    },
+    {
+      "name": "vps-quic-proxy-deploy",
+      "original_category": "devops",
+      "original_tags": [],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "desktop_control",
+        "software_development"
+      ],
+      "capability_tags": [
+        "browse",
+        "deploy"
+      ],
+      "target_objects": [
+        "browser",
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: devops_infrastructure (conf=1.00) based on category='devops', desc='Deploy and troubleshoot a VPS browser proxy with Hysteria2/Q'"
+    },
+    {
+      "name": "watchers",
+      "original_category": "devops",
+      "original_tags": [
+        "cron",
+        "polling",
+        "rss",
+        "github",
+        "http",
+        "automation",
+        "monitoring"
+      ],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "integrations_services",
+        "software_development"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "github",
+        "rss"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.55,
+      "reason": "Primary: devops_infrastructure (conf=0.55) based on category='devops', desc='Poll RSS, JSON APIs, and GitHub with watermark dedup.'"
+    },
+    {
+      "name": "web-audio-music",
+      "original_category": "media",
+      "original_tags": [
+        "web-audio",
+        "music",
+        "oscillator",
+        "procedural",
+        "transcription",
+        "sound"
+      ],
+      "primary_category": "creative_generation",
+      "secondary_categories": [
+        "specialized_domain",
+        "data_science"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "audio"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: creative_generation (conf=1.00) based on category='media', desc='Build music/audio systems in web apps using Web Audio API os'"
+    },
+    {
+      "name": "web-development",
+      "original_category": "software-development",
+      "original_tags": [],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "creative_generation",
+        "devops_infrastructure"
+      ],
+      "capability_tags": [
+        "browse",
+        "code",
+        "debug"
+      ],
+      "target_objects": [
+        "browser",
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": false,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.85,
+      "reason": "Primary: software_development (conf=0.85) based on category='software-development', desc='Set up, run, test, and debug local web projects (Vite/React/'"
+    },
+    {
+      "name": "web-research",
+      "original_category": "research",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "data_science",
+        "integrations_services"
+      ],
+      "capability_tags": [
+        "browse",
+        "extract",
+        "search"
+      ],
+      "target_objects": [
+        "browser",
+        "markdown",
+        "paper"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": true,
+      "destructive": true,
+      "risk_level": "high",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.95,
+      "reason": "Primary: research_knowledge (conf=0.95) based on category='research', desc='Collect public data from the web — deep search via Exa API, '"
+    },
+    {
+      "name": "web-tools",
+      "original_category": "research",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "software_development",
+        "desktop_control"
+      ],
+      "capability_tags": [
+        "code",
+        "search"
+      ],
+      "target_objects": [
+        "cli"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_cli",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.55,
+      "reason": "Primary: research_knowledge (conf=0.55) based on category='research', desc='统一的网络智能路由——6 个数据源（Exa/Firecrawl/Semantic Scholar/Crossref/We'"
+    },
+    {
+      "name": "webhook-subscriptions",
+      "original_category": "devops",
+      "original_tags": [
+        "webhook",
+        "events",
+        "automation",
+        "integrations",
+        "notifications",
+        "push"
+      ],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "integrations_services",
+        "software_development"
+      ],
+      "capability_tags": [
+        "monitor"
+      ],
+      "target_objects": [
+        "github",
+        "webhook"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: devops_infrastructure — webhook subscriptions for event-driven agent runs. External service trigger infrastructure."
+    },
+    {
+      "name": "wechat-article-extractor",
+      "original_category": "productivity",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "scraping_extraction",
+        "productivity_automation"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "github"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: research_knowledge — external content extraction, research lens analysis, save to Obsidian Inbox."
+    },
+    {
+      "name": "weights-and-biases",
+      "original_category": "mlops",
+      "original_tags": [
+        "MLOps",
+        "Weights And Biases",
+        "WandB",
+        "Experiment Tracking",
+        "Hyperparameter Tuning",
+        "Model Registry",
+        "Collaboration",
+        "Real-Time Visualization",
+        "PyTorch",
+        "TensorFlow",
+        "HuggingFace"
+      ],
+      "primary_category": "data_science",
+      "secondary_categories": [
+        "software_development",
+        "specialized_domain"
+      ],
+      "capability_tags": [
+        "code",
+        "visualize"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.65,
+      "reason": "Primary: data_science (conf=0.65) based on category='mlops', desc='W&B: log ML experiments, sweeps, model registry, dashboards.'"
+    },
+    {
+      "name": "wiki-auto-push-fix",
+      "original_category": "devops",
+      "original_tags": [],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "desktop_control",
+        "software_development"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "github",
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": true,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.5,
+      "reason": "Primary: devops_infrastructure (conf=0.50) based on category='devops', desc='Dual-machine wiki-llm git sync: auto-push/pull cron setup, h'"
+    },
+    {
+      "name": "wiki-conversation-recall",
+      "original_category": "research",
+      "original_tags": [
+        "wiki",
+        "recall",
+        "conversation",
+        "research",
+        "knowledge-base"
+      ],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "productivity_automation",
+        "software_development"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [
+        "markdown"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: research_knowledge (conf=1.00) based on category='research', desc='Recalling and correcting from the user's personal wiki durin'"
+    },
+    {
+      "name": "wiki-knowledge",
+      "original_category": "research",
+      "original_tags": [
+        "wiki",
+        "knowledge-base",
+        "obsidian",
+        "research",
+        "mcp"
+      ],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "productivity_automation",
+        "integrations_services"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: research_knowledge (conf=1.00) based on category='research', desc='通过 MCP 读写主人的 Obsidian 知识库（wiki-llm vault）。研究/项目话题时自动搜索，每天首次检'"
+    },
+    {
+      "name": "windows-exa-urllib3-patch",
+      "original_category": "devops",
+      "original_tags": [],
+      "primary_category": "desktop_control",
+      "secondary_categories": [
+        "research_knowledge",
+        "integrations_services"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "external_api",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.75,
+      "reason": "Primary: desktop_control (conf=0.75) based on category='devops', desc='Fix for Exa web_search hanging on Windows due to httpx/reque'"
+    },
+    {
+      "name": "windows-operations",
+      "original_category": "devops",
+      "original_tags": [],
+      "primary_category": "desktop_control",
+      "secondary_categories": [
+        "software_development",
+        "creative_generation"
+      ],
+      "capability_tags": [
+        "debug"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "pure_prompt",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: desktop_control (conf=1.00) based on category='devops', desc='Comprehensive Windows system administration guide — crash di'"
+    },
+    {
+      "name": "windows-powershell-ref",
+      "original_category": "windows-powershell-ref",
+      "original_tags": [],
+      "primary_category": "desktop_control",
+      "secondary_categories": [
+        "software_development",
+        "productivity_automation"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.75,
+      "reason": "Primary: desktop_control (conf=0.75) based on category='windows-powershell-ref', desc='Windows CMD + PowerShell 正确写法参考。避免AI把PowerShell/CMD语法写错到git-'"
+    },
+    {
+      "name": "wireguard-vps-relay",
+      "original_category": "devops",
+      "original_tags": [],
+      "primary_category": "devops_infrastructure",
+      "secondary_categories": [
+        "specialized_domain",
+        "creative_generation"
+      ],
+      "capability_tags": [],
+      "target_objects": [
+        "server"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "mcp",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.95,
+      "reason": "Primary: devops_infrastructure (conf=0.95) based on category='devops', desc='Set up WireGuard tunnel between a VPS (public IP) and a home'"
+    },
+    {
+      "name": "writing-plans",
+      "original_category": "software-development",
+      "original_tags": [
+        "planning",
+        "design",
+        "implementation",
+        "workflow",
+        "documentation"
+      ],
+      "primary_category": "software_development",
+      "secondary_categories": [
+        "research_knowledge",
+        "creative_generation"
+      ],
+      "capability_tags": [
+        "code",
+        "write"
+      ],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 1.0,
+      "reason": "Primary: software_development (conf=1.00) based on category='software-development', desc='Write implementation plans: bite-sized tasks, paths, code.'"
+    },
+    {
+      "name": "xurl",
+      "original_category": "social-media",
+      "original_tags": [
+        "twitter",
+        "x",
+        "social-media",
+        "xurl",
+        "official-api"
+      ],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "productivity_automation"
+      ],
+      "capability_tags": [
+        "search"
+      ],
+      "target_objects": [
+        "cli",
+        "image",
+        "video"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: integrations_services — X/Twitter via xurl CLI: post, search, DM, media. Social media API integration."
+    },
+    {
+      "name": "youtube-content",
+      "original_category": "media",
+      "original_tags": [],
+      "primary_category": "research_knowledge",
+      "secondary_categories": [
+        "creative_generation",
+        "scraping_extraction"
+      ],
+      "capability_tags": [
+        "extract",
+        "summarize"
+      ],
+      "target_objects": [
+        "video"
+      ],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "local_file",
+      "requires_auth": false,
+      "requires_network": true,
+      "requires_user_session": false,
+      "destructive": true,
+      "risk_level": "medium",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.7,
+      "reason": "Primary: research_knowledge — YouTube transcripts to summaries, threads, blogs. Content extraction and knowledge reformatting."
+    },
+    {
+      "name": "yuanbao",
+      "original_category": "yuanbao",
+      "original_tags": [
+        "yuanbao",
+        "mention",
+        "at",
+        "group",
+        "members",
+        "元宝",
+        "派",
+        "艾特"
+      ],
+      "primary_category": "integrations_services",
+      "secondary_categories": [
+        "desktop_control"
+      ],
+      "capability_tags": [],
+      "target_objects": [],
+      "operation_type": [],
+      "output_type": [],
+      "execution_mode": "mcp",
+      "requires_auth": false,
+      "requires_network": false,
+      "requires_user_session": false,
+      "destructive": false,
+      "risk_level": "low",
+      "maturity": "usable",
+      "maintenance": "uncertain",
+      "confidence": 0.8,
+      "reason": "Primary: integrations_services — Yuanbao groups: mention users, query info/members, send DMs."
+    }
+  ]
+}

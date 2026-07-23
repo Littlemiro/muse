@@ -1,0 +1,14 @@
+[Unit]
+Description=MUSE MCP Bridge — expose skills as MCP prompts
+After=network.target
+
+[Service]
+Type=simple
+User=%(USER)s
+ExecStart=/usr/bin/python3 /opt/muse/muse-mcp-server.py --port 8768 --skills-dir /opt/muse/skills
+WorkingDirectory=/opt/muse
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
