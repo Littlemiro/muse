@@ -13,6 +13,8 @@ copies so that ``rollback`` can restore an earlier approved set.
 
 Examples:
     python3 muse-console.py audit --root ~/.hermes/skills
+    python3 muse-console.py route "repair jellyfin" --json
+    python3 muse-console.py inspect jellyfin-repair
     python3 muse-console.py approve my-skill --ack-risk
     python3 muse-console.py bundle
     python3 muse-console.py apply --target ~/.hermes/.muse/active
@@ -59,9 +61,29 @@ TEXT_SUFFIXES = {
 }
 MAX_INSPECT_BYTES = 2 * 1024 * 1024
 MAX_SKILL_MD_BYTES = 4 * 1024 * 1024
+MAX_INSPECT_OUTPUT_BYTES = 2 * 1024 * 1024
+MAX_INSPECT_SCRIPT_BYTES = 256 * 1024
 REFACTOR_MAX_LINES = 500
 MARKDOWN_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 REFERENCE_TOKEN_RE = re.compile(r"(?<![\w/])references/[A-Za-z0-9._/-]+")
+RISK_TAG_BY_FINDING = {
+    "remote_pipe_exec": {"network", "script"},
+    "powershell_pipe_exec": {"network", "script"},
+    "encoded_powershell": {"script"},
+    "destructive_delete": {"destructive", "filesystem"},
+    "destructive_format": {"destructive", "filesystem"},
+    "force_push": {"destructive", "network"},
+    "world_writable": {"filesystem"},
+    "scripts_present": {"script"},
+    "external_links": {"network"},
+    "private_key": {"api_key"},
+    "github_token": {"api_key"},
+    "openai_key": {"api_key"},
+    "aws_access_key": {"api_key"},
+    "path_escape": {"filesystem"},
+    "symlink_present": {"filesystem"},
+    "special_file": {"filesystem"},
+}
 
 
 def now_iso() -> str:
@@ -629,6 +651,13 @@ def print_audit_summary(state: dict[str, Any], records: list[SkillRecord], error
 
 def find_record(records: list[SkillRecord], reference: str) -> SkillRecord:
     exact = [item for item in records if item.skill_id == reference or item.name == reference or item.skill_dir == reference]
+    if not exact:
+        try:
+            target = normalize_path(Path(reference))
+        except OSError:
+            target = None
+        if target is not None:
+            exact = [item for item in records if normalize_path(Path(item.skill_dir)) == target]
     if len(exact) == 1:
         return exact[0]
     if len(exact) > 1:
@@ -676,6 +705,182 @@ def command_search(args: argparse.Namespace) -> int:
     query = args.query.lower()
     selected = [item for item in records if query in " ".join([item.name, item.description, item.category, " ".join(item.tags)]).lower()]
     print_records(state, selected, args.json)
+    return 0
+
+
+def route_tokens(value: str) -> list[str]:
+    return [item.casefold() for item in re.findall(r"[A-Za-z0-9][A-Za-z0-9._-]*|[\u4e00-\u9fff]+", value) if len(item) > 1]
+
+
+def risk_tags_for_record(record: SkillRecord) -> list[str]:
+    tags: set[str] = set()
+    for finding in record.findings:
+        tags.update(RISK_TAG_BY_FINDING.get(finding.code, set()))
+    if record.urls:
+        tags.add("network")
+    if record.script_files:
+        tags.add("script")
+
+    body = inspect_text(Path(record.skill_dir) / "SKILL.md").casefold()
+    if re.search(r"\b(systemctl|service|launchctl|sc\.exe|docker\s+(?:compose|run))\b", body):
+        tags.add("service")
+    if re.search(r"\b(?:rm\s+-r|dd\s+if=|mkfs|diskpart|format(?:\.com)?|drop\s+(?:table|database)|delete\s+from)\b", body):
+        tags.update({"destructive", "filesystem"})
+    if re.search(r"\b(?:api[_ -]?key|token|password|secret|cookie|oauth)\b", body):
+        tags.add("api_key")
+    if re.search(r"(?:/etc/|/var/|[A-Za-z]:\\|\b(?:chmod|chown|mount)\b)", body):
+        tags.add("filesystem")
+    return sorted(tags)
+
+
+def route_record(record: SkillRecord, score: int = 0) -> dict[str, Any]:
+    value = {
+        "skill_id": record.skill_id,
+        "name": record.name,
+        "description": redact(record.description, 1024),
+        "category": record.category,
+        "risk_tags": risk_tags_for_record(record),
+        "audit_status": record.audit_status,
+        "file_count": record.file_count,
+        "script_files": record.script_files,
+        "path": str(normalize_path(Path(record.skill_dir))),
+        "root": str(normalize_path(Path(record.root))),
+        "version": record.version,
+        "content_hash": record.content_hash,
+    }
+    if score:
+        value["match_score"] = score
+    return value
+
+
+def route_score(record: SkillRecord, task: str) -> int:
+    query = task.casefold().strip()
+    tokens = route_tokens(task)
+    fields = {
+        "name": record.name.casefold(),
+        "description": record.description.casefold(),
+        "category": record.category.casefold(),
+        "tags": " ".join(record.tags).casefold(),
+        "path": record.skill_dir.casefold(),
+    }
+    score = 0
+    if query and query in fields["name"]:
+        score += 100
+    elif query and query in " ".join(fields.values()):
+        score += 20
+    for token in tokens:
+        if token in fields["name"]:
+            score += 12
+        elif token in fields["tags"] or token in fields["category"]:
+            score += 7
+        elif token in fields["description"] or token in fields["path"]:
+            score += 4
+    return score
+
+
+def route_matches(records: list[SkillRecord], task: str, limit: int = 3) -> list[tuple[int, SkillRecord]]:
+    scored = [(route_score(record, task), record) for record in records]
+    scored = [(score, record) for score, record in scored if score > 0]
+    status_order = {"ready": 0, "needs_review": 1, "critical": 2}
+    return sorted(scored, key=lambda item: (-item[0], status_order.get(item[1].audit_status, 3), item[1].name))[:limit]
+
+
+def command_route(args: argparse.Namespace) -> int:
+    task = args.task.strip()
+    if not task:
+        raise SystemExit("Task description cannot be empty.")
+    _, records, errors = current_scan(args.state_dir, args.root or None, save=False)
+    matches = [route_record(record, score) for score, record in route_matches(records, task)]
+    result = {"version": VERSION, "task": task, "matches": matches, "root_warnings": errors}
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0
+    if not matches:
+        print(f"No MUSE skills matched: {task}")
+        return 0
+    print(f"MUSE route: {task}")
+    for index, item in enumerate(matches, 1):
+        risk = ", ".join(item["risk_tags"]) or "none"
+        print(f"{index}. {item['name']} [{item['audit_status']}] risk={risk}")
+        print(f"   {item['description']}")
+        print(f"   Path: {item['path']}")
+    for warning in errors:
+        print(f"WARNING: {warning}", file=sys.stderr)
+    return 0
+
+
+def read_inspect_file(path: Path, max_bytes: int) -> tuple[str | None, str | None]:
+    try:
+        file_stat = path.lstat()
+        if path.is_symlink() or not stat.S_ISREG(file_stat.st_mode):
+            return None, "not a regular file"
+        if file_stat.st_size > max_bytes:
+            return None, f"file exceeds the {max_bytes} byte inspect limit"
+        return path.read_text(encoding="utf-8", errors="replace"), None
+    except OSError as exc:
+        return None, str(exc)
+
+
+def inspect_payload(record: SkillRecord, include_scripts: bool, acknowledge_risk: bool) -> dict[str, Any]:
+    payload = route_record(record)
+    payload.update({"requires_acknowledgement": False, "skill_md": None, "scripts": [], "warnings": []})
+    if record.audit_status == "critical" and not acknowledge_risk:
+        payload["requires_acknowledgement"] = True
+        payload["warnings"].append("Critical findings require explicit --ack-risk for one-time content inspection.")
+        return payload
+
+    skill_dir = normalize_path(Path(record.skill_dir))
+    marker, error = read_inspect_file(skill_dir / "SKILL.md", MAX_SKILL_MD_BYTES)
+    if error:
+        payload["warnings"].append(f"SKILL.md: {error}")
+    elif marker is not None:
+        payload["skill_md"] = redact(marker, MAX_INSPECT_OUTPUT_BYTES)
+        if len(marker) > MAX_INSPECT_OUTPUT_BYTES:
+            payload["warnings"].append("SKILL.md output was truncated at the inspect limit.")
+
+    if record.audit_status == "needs_review":
+        payload["warnings"].append("This skill has review findings; Hermes still controls command execution approval.")
+    if not include_scripts:
+        if record.script_files:
+            payload["warnings"].append("Script contents omitted; re-run with --include-scripts to inspect them.")
+        return payload
+
+    for relative in record.script_files:
+        script_path = normalize_path(skill_dir / relative)
+        if not is_within(script_path, skill_dir):
+            payload["warnings"].append(f"Skipped script outside skill directory: {relative}")
+            continue
+        content, error = read_inspect_file(script_path, MAX_INSPECT_SCRIPT_BYTES)
+        item = {"path": str(script_path), "content": None}
+        if error:
+            item["error"] = error
+        elif content is not None:
+            item["content"] = redact(content, MAX_INSPECT_SCRIPT_BYTES)
+        payload["scripts"].append(item)
+    return payload
+
+
+def command_inspect(args: argparse.Namespace) -> int:
+    _, records, _ = current_scan(args.state_dir, args.root or None, save=False)
+    record = find_record(records, args.skill)
+    payload = inspect_payload(record, args.include_scripts, args.ack_risk)
+    if args.json:
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return 0
+    print(f"Inspect: {payload['name']} [{payload['audit_status']}]")
+    print(f"Risk tags: {', '.join(payload['risk_tags']) or 'none'}")
+    print(f"Path: {payload['path']}")
+    for warning in payload["warnings"]:
+        print(f"WARNING: {warning}")
+    if payload["requires_acknowledgement"]:
+        print(f"Re-run with --ack-risk to inspect this critical skill once: {payload['name']}")
+        return 0
+    if payload["skill_md"] is not None:
+        print("\n--- SKILL.md ---\n")
+        print(payload["skill_md"], end="" if payload["skill_md"].endswith("\n") else "\n")
+    for script in payload["scripts"]:
+        print(f"\n--- {script['path']} ---\n")
+        print(script.get("content") or script.get("error", "unavailable"))
     return 0
 
 
@@ -1105,6 +1310,20 @@ def build_parser() -> argparse.ArgumentParser:
     refactor.add_argument("--json", action="store_true")
     refactor.add_argument("--strict", action="store_true", help="Treat advisory findings as a failing result")
     refactor.set_defaults(func=command_refactor_audit)
+
+    route = commands.add_parser("route", help="Find relevant skills without changing MUSE state")
+    add_common(route)
+    route.add_argument("task", help="Natural-language task description")
+    route.add_argument("--json", action="store_true")
+    route.set_defaults(func=command_route)
+
+    inspect = commands.add_parser("inspect", help="Read one skill on demand without approving or applying it")
+    add_common(inspect)
+    inspect.add_argument("skill", help="Skill name, id, or path returned by route")
+    inspect.add_argument("--json", action="store_true")
+    inspect.add_argument("--include-scripts", action="store_true", help="Include bounded, redacted script contents")
+    inspect.add_argument("--ack-risk", action="store_true", help="Acknowledge critical findings for this one-time inspection")
+    inspect.set_defaults(func=command_inspect)
 
     scan = commands.add_parser("scan", help="Read-only discover and audit skill roots")
     add_common(scan)

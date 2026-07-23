@@ -17,6 +17,8 @@ Hermes 自带的 Skills Hub lock/audit 与 MUSE 审计是互补关系：前者�
 - 只把 unchanged、approved 且没有 critical findings 的技能导出。
 - 将每次导出保存为独立 release，回滚不需要联网。
 
+`route` 和 `inspect` 是独立的只读发现路径：它们可以从配置的 source roots 找到尚未 approved 的 skill，但不修改 state、审批、release 或 Hermes 配置。`inspect` 不执行脚本、不访问 URL；默认不输出脚本正文，`--include-scripts` 只读取受大小限制且经过脱敏的普通文件。`critical` skill 必须显式使用 `--ack-risk` 才能一次性读取正文，但这不等于允许其进入长期 release。
+
 ## 建议的 Hermes 配置
 
 在实验 profile 中启用：
@@ -32,7 +34,7 @@ memory:
 
 如果使用 `skills.external_dirs`，请让源目录对 Hermes 进程只读。MUSE 的 approved export 可以作为单独的 external directory；不要把源仓库和 approved export 指向同一个可写目录。
 
-Hermes 的本地 `~/.hermes/skills` 优先于 `external_dirs`。因此不要用默认 profile 的本地技能目录作为 source，再把 release 挂到同一个 profile 的 `external_dirs`；旧文件会遮蔽 release。推荐使用本地 skills 为空的独立 profile，并把 approved export 作为它唯一的 external directory。`muse-console.py apply/rollback` 会检查这个优先级冲突并拒绝激活。
+Hermes 的本地 `~/.hermes/skills` 优先于 `external_dirs`。因此不要用默认 profile 的本地技能目录作为 source，再把 release 挂到同一个 profile 的 `external_dirs`；旧文件会遮蔽 release。推荐使用本地 skills 为空的独立 profile，并把 approved export 作为它唯一的 external directory。`muse-console.py apply/rollback` 会检查这个优先级冲突并拒绝激活；route/inspect 的临时读取不绕过这个长期发布保护。
 
 ## 风险等级
 

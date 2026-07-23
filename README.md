@@ -71,6 +71,28 @@ memory:
 
 MUSE 的 `apply` 输出目录是 Hermes 的外部技能目录候选；MUSE 不会自动修改 Hermes 配置，也不会把源技能目录改成可写镜像。源目录应对 Hermes 进程只读；`external_dirs` 只挂载 `active/current`。
 
+要让 Hermes 自动执行“先查 MUSE、再决定是否读取”的路由规则，请把仓库中的 `muse-router/` 作为一个常驻 skill 安装到目标 profile。它只调用 `route`/`inspect` 这两个只读命令；没有匹配时仍回退到 Hermes 的普通工作流。
+
+## 按需发现和读取
+
+`audit` 产生的 `state.json` 是本地 catalog；`route` 会在已配置的 source roots 中重新发现当前文件，因此未进入 catalog 或尚未 approved 的本地 skill 也能被找到。`route` 和 `inspect` 都是只读操作，不会修改审批状态、release 或 Hermes profile。
+
+```bash
+# 返回最相关的最多 3 个 skill；适合给 agent 使用 --json
+python3 muse-console.py route "帮我修 jellyfin" --json
+
+# 读取匹配 skill 的 SKILL.md，不需要 approve/apply
+python3 muse-console.py inspect jellyfin-repair --json
+
+# needs_review 会带风险提示；脚本默认只列出文件名
+python3 muse-console.py inspect jellyfin-repair --include-scripts
+
+# critical 默认只返回摘要；一次性查看正文需要明确确认
+python3 muse-console.py inspect diy-nas-setup --ack-risk
+```
+
+`route` 只搜索当前配置的 roots，不会扫描整台电脑或联网。`inspect` 不执行脚本、不抓取 URL；脚本内容必须显式请求，并受大小限制和凭证脱敏保护。临时读取不会让 skill 进入 Hermes profile；需要长期启用时仍使用 `approve`/`apply`。
+
 ## 与原始论文的关系
 
 本项目受 [MUSE-Autoskill](https://arxiv.org/html/2605.27366v1) 的技能生命周期思想启发，但不是论文作者的官方实现，也不复刻完整 Agent runtime。论文负责创建、记忆、管理、评估和修炼；MUSE-Hermes 把其中适合本地运维的部分落成技能资产控制层，并复用 Hermes 自己的 `skill_manage`、memory 和审批机制。
@@ -83,9 +105,10 @@ Hermes 现在也有 Skills Hub、`skills audit`、来源/hash lock 和原生 bun
 |------|------|
 | `SPEC.md` | MUSE SKILL.md 格式规范（frontmatter 标准 + 目录结构） |
 | `CLASSIFICATION.md` | 12 分类 + 多维标签 + 自生长分类体系 |
-| `muse-console.py` | 发现、审计、结构建议、批准、bundle、版本导出和回滚 |
+| `muse-console.py` | route/inspect 发现读取、审计、结构建议、批准、bundle、版本导出和回滚 |
 | `muse-enforce.py` | 安全默认的格式审计器；写入需要显式 `--fix` |
 | `muse-mcp-server.py` | 可选 MCP bridge；默认只监听 loopback |
+| `muse-router/SKILL.md` | Hermes 的先路由、后读取决策规则 |
 | `requirements.txt` | Python 依赖 |
 | `demo-hello/SKILL.md` | 干净的示例模板，用来参考格式 |
 | `tests/` | 控制台的安全回归测试 |
@@ -93,8 +116,11 @@ Hermes 现在也有 Skills Hub、`skills audit`、来源/hash lock 和原生 bun
 ## 边界和安全模型
 
 - MUSE 从不抓取技能中的 URL，也不执行技能里的脚本。
+- `route`/`inspect` 可以发现和临时读取未 approved skill，但不会把它写入 active release。
+- `critical` skill 需要 `inspect --ack-risk` 才能读取正文；长期 `apply` 仍拒绝 critical。
 - 未批准、内容 hash 已变化或静态审计为 critical 的技能不会被 `apply` 导出。
 - `apply` 只写独立的版本目录；源技能目录不会被覆盖。
+- `apply`/`rollback` 仍保留 source root 与 Hermes primary skills 的冲突检查。
 - `rollback` 只切换已生成的 release，不从网络重新下载内容。
 - MCP bridge 默认绑定 `127.0.0.1`；远程绑定必须显式 `--allow-insecure-remote`，并应放在外部认证代理之后。
 - 详细威胁模型见 [SECURITY.md](SECURITY.md)。
