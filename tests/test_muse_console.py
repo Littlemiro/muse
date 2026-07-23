@@ -4,6 +4,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "muse-console.py"
@@ -34,6 +35,36 @@ def write_skill(root: Path, category: str, name: str, body: str, extra: str = ""
 
 
 class MuseConsoleTests(unittest.TestCase):
+    def test_safe_home_prefers_explicit_hermes_home(self):
+        with tempfile.TemporaryDirectory() as temp:
+            explicit = Path(temp) / "explicit-hermes"
+            with patch.dict(
+                muse.os.environ,
+                {"HERMES_HOME": str(explicit), "LOCALAPPDATA": str(Path(temp) / "local")},
+                clear=True,
+            ):
+                with patch.object(muse.sys, "platform", "win32"):
+                    self.assertEqual(muse.safe_home(), explicit)
+
+    def test_safe_home_uses_windows_local_app_data(self):
+        with tempfile.TemporaryDirectory() as temp:
+            local_app_data = Path(temp) / "AppData" / "Local"
+            with patch.dict(
+                muse.os.environ,
+                {"HERMES_HOME": "", "LOCALAPPDATA": str(local_app_data)},
+                clear=True,
+            ):
+                with patch.object(muse.sys, "platform", "win32"):
+                    self.assertEqual(muse.safe_home(), local_app_data / "hermes")
+
+    def test_safe_home_does_not_return_relative_path_without_local_app_data(self):
+        with tempfile.TemporaryDirectory() as temp:
+            fallback = Path(temp) / "user"
+            with patch.dict(muse.os.environ, {"HERMES_HOME": ""}, clear=True):
+                with patch.object(muse.sys, "platform", "win32"):
+                    with patch.object(muse.Path, "home", return_value=fallback):
+                        self.assertEqual(muse.safe_home(), fallback / ".hermes")
+
     def test_safe_empty_root_and_valid_skill(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

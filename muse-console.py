@@ -69,9 +69,17 @@ def now_iso() -> str:
 
 
 def safe_home() -> Path:
-    """Resolve Hermes home without the empty-Path truthiness bug."""
+    """Resolve Hermes home using Hermes' native platform defaults."""
     raw = os.environ.get("HERMES_HOME", "").strip()
-    return Path(raw).expanduser() if raw else Path.home() / ".hermes"
+    if raw:
+        return Path(raw).expanduser()
+
+    if sys.platform == "win32":
+        local_app_data = os.environ.get("LOCALAPPDATA", "").strip()
+        if local_app_data:
+            return Path(local_app_data).expanduser() / "hermes"
+
+    return Path.home() / ".hermes"
 
 
 def default_state_dir() -> Path:
