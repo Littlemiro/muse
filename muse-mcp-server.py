@@ -8,29 +8,38 @@ Usage:
 
 Config env vars:
     MUSE_MCP_PORT (default: 8768)
-    MUSE_MCP_HOST (default: 0.0.0.0)
-    SKILLS_DIR    (default: auto-detect ~/.hermes/skills/ or your OS equivalent)
+    MUSE_MCP_HOST (default: 127.0.0.1; remote binding requires --allow-insecure-remote)
+    SKILLS_DIR    (default: auto-detect ~/.hermes/.muse/active/current/)
 """
 
 import os, sys, re, argparse
 from pathlib import Path
 from typing import Any
-from mcp.server.fastmcp import FastMCP
-from mcp.server.fastmcp.prompts import Prompt
-from mcp.server.fastmcp.prompts.base import Message
-from mcp.types import TextContent
 
 # ── Path resolution ──────────────────────────────────────────────────
 
+def hermes_home() -> Path:
+    raw = os.environ.get("HERMES_HOME", "").strip()
+    return Path(raw).expanduser() if raw else Path.home() / ".hermes"
+
+
 def default_skills_dir() -> Path:
-    """Platform-aware default skills directory."""
-    if sys.platform == "win32":
-        base = Path(os.environ.get("HERMES_HOME", "")) or \
-               Path.home() / "AppData" / "Local" / "hermes"
-    else:
-        base = Path(os.environ.get("HERMES_HOME", "")) or \
-               Path.home() / ".hermes"
-    return base / "skills"
+    """Use only the MUSE-approved activation directory by default."""
+    return hermes_home() / ".muse" / "active" / "current"
+
+
+def is_within(path: Path, parent: Path) -> bool:
+    try:
+        path.relative_to(parent)
+        return True
+    except ValueError:
+        return False
+
+
+def is_approved_export(path: Path) -> bool:
+    candidate = path.expanduser().resolve()
+    approved = default_skills_dir().resolve()
+    return is_within(candidate, approved)
 
 # ── Skill scanner ────────────────────────────────────────────────────
 
@@ -41,8 +50,13 @@ def find_all_skills(skills_dir: Path) -> list[dict[str, Any]]:
         print(f"[muse-mcp] WARNING: Skills dir not found: {skills_dir}", file=sys.stderr)
         return skills
 
+    root = skills_dir.resolve()
     for sk_path in skills_dir.rglob("SKILL.md"):
         try:
+            resolved = sk_path.resolve(strict=True)
+            if sk_path.is_symlink() or not resolved.is_file() or not resolved.is_relative_to(root):
+                print(f"[muse-mcp] Skipping out-of-root or linked skill: {sk_path}", file=sys.stderr)
+                continue
             meta = parse_skill_md(sk_path)
             if meta and meta.get("name"):
                 skills.append(meta)
@@ -70,6 +84,9 @@ def parse_skill_md(path: Path) -> dict[str, Any] | None:
                 k, _, v = line.partition(":")
                 meta[k.strip()] = v.strip().strip("\"'")
 
+    if not isinstance(meta, dict):
+        meta = {}
+
     body_start = fm_match.end()
     body = raw[body_start:].strip()
 
@@ -86,14 +103,32 @@ def parse_skill_md(path: Path) -> dict[str, Any] | None:
     except Exception:
         rel_parts = [path.parent.name]
 
+    metadata = meta.get("metadata", {})
+    if not isinstance(metadata, dict):
+        metadata = {}
+    hermes = metadata.get("hermes", {})
+    if not isinstance(hermes, dict):
+        hermes = {}
+
+    tags = hermes.get("tags", [])
+    if not isinstance(tags, list):
+        tags = []
+    else:
+        tags = [str(item) for item in tags]
+    trigger_keywords = meta.get("trigger_keywords", [])
+    if not isinstance(trigger_keywords, list):
+        trigger_keywords = []
+    else:
+        trigger_keywords = [str(item) for item in trigger_keywords]
+
     skill_info = {
         "name": str(meta.get("name", path.parent.name)),
         "description": str(meta.get("description", "")),
         "version": str(meta.get("version", "0.0.0")),
         "author": str(meta.get("author", "unknown")),
-        "category": str(meta.get("metadata", {}).get("hermes", {}).get("category", "")),
-        "tags": meta.get("metadata", {}).get("hermes", {}).get("tags", []),
-        "trigger_keywords": meta.get("trigger_keywords", []),
+        "category": str(hermes.get("category", "")),
+        "tags": tags,
+        "trigger_keywords": trigger_keywords,
         "body": body,
         "path": str(path),
         "rel_path": "/".join(rel_parts),
@@ -118,8 +153,16 @@ def build_prompt_text(skill: dict[str, Any]) -> str:
 
 # ── MCP Server ───────────────────────────────────────────────────────
 
-def create_mcp_server(skills_dir: Path, host: str = "0.0.0.0", port: int = 8768) -> FastMCP:
+def create_mcp_server(skills_dir: Path, host: str = "127.0.0.1", port: int = 8768) -> Any:
     """Create a FastMCP server exposing skills as prompts."""
+    try:
+        from mcp.server.fastmcp import FastMCP
+        from mcp.server.fastmcp.prompts import Prompt
+        from mcp.server.fastmcp.prompts.base import Message
+        from mcp.types import TextContent
+    except ImportError as exc:
+        raise SystemExit("MCP bridge requires the optional dependencies in requirements.txt") from exc
+
     skills_list = find_all_skills(skills_dir)
     print(f"[muse-mcp] Loaded {len(skills_list)} skills from {skills_dir}", file=sys.stderr)
 
@@ -213,16 +256,27 @@ To browse available skills: call `prompts/list`.
 # ── CLI ──────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description="MUSE MCP Bridge — expose Hermes skills as MCP prompts")
+    parser = argparse.ArgumentParser(description="MUSE MCP Bridge - expose Hermes skills as MCP prompts")
     parser.add_argument("--port", type=int, default=int(os.environ.get("MUSE_MCP_PORT", "8768")),
                         help="Port to listen on (default: 8768, or $MUSE_MCP_PORT)")
     parser.add_argument("--skills-dir", type=str, default=os.environ.get("SKILLS_DIR", ""),
                         help="Path to skills directory (default: auto-detect)")
-    parser.add_argument("--host", type=str, default=os.environ.get("MUSE_MCP_HOST", "0.0.0.0"),
-                        help="Host to bind (default: 0.0.0.0)")
+    parser.add_argument("--allow-unapproved-source", action="store_true",
+                        help="Allow serving a directory outside MUSE active/current; review it first")
+    parser.add_argument("--host", type=str, default=os.environ.get("MUSE_MCP_HOST", "127.0.0.1"),
+                        help="Host to bind (default: 127.0.0.1)")
+    parser.add_argument("--allow-insecure-remote", action="store_true",
+                        help="Allow non-loopback HTTP binding without built-in auth; use only behind a trusted reverse proxy")
     args = parser.parse_args()
 
+    if args.host.lower() not in {"127.0.0.1", "localhost", "::1"} and not args.allow_insecure_remote:
+        parser.error("Refusing non-loopback binding without --allow-insecure-remote")
+    if args.allow_insecure_remote and args.host.lower() not in {"127.0.0.1", "localhost", "::1"}:
+        print("[muse-mcp] WARNING: remote HTTP binding has no built-in authentication; put it behind a trusted authenticated proxy", file=sys.stderr)
+
     skills_dir = Path(args.skills_dir) if args.skills_dir else default_skills_dir()
+    if not args.allow_unapproved_source and not is_approved_export(skills_dir):
+        parser.error("Refusing to expose a non-approved source; use MUSE active/current or explicitly pass --allow-unapproved-source")
     print(f"[muse-mcp] Starting on {args.host}:{args.port}", file=sys.stderr)
     print(f"[muse-mcp] Skills dir: {skills_dir}", file=sys.stderr)
 

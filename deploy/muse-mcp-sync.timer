@@ -1,5 +1,5 @@
 [Unit]
-Description=Daily MUSE MCP skills sync
+Description=Daily MUSE MCP skills audit
 [Timer]
 OnCalendar=daily
 Persistent=true

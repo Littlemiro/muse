@@ -369,7 +369,7 @@ def enforce(skills_dir, dry_run=False):
         for r in report:
             print(r)
     else:
-        print("\nNo changes needed — all skills MUSE-compliant.")
+        print("\nNo changes needed - all skills MUSE-compliant.")
 
     # Audit summary
     fields = {k: 0 for k in ["version", "author", "license", "platforms",
@@ -390,9 +390,12 @@ def enforce(skills_dir, dry_run=False):
 
     total = len(all_skills)
     print(f"\nMUSE Audit ({total} skills):")
+    if total == 0:
+        print("  No valid SKILL.md files found.")
+        return 0
     for k, v in fields.items():
         pct = v * 100 // total
-        bar = "█" * (pct // 5) + "░" * (20 - pct // 5)
+        bar = "#" * (pct // 5) + "." * (20 - pct // 5)
         print(f"  {k:15s} {bar} {v:3d}/{total} ({pct}%)")
 
     desc_imperative = sum(1 for s in all_skills
@@ -405,7 +408,8 @@ def enforce(skills_dir, dry_run=False):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python3 muse-enforce.py <skills-dir> [--dry-run]")
+        print("Usage: python3 muse-enforce.py <skills-dir> [--dry-run|--fix]")
         sys.exit(1)
-    dry = "--dry-run" in sys.argv
+    # Safe by default: editing requires an explicit --fix.
+    dry = "--fix" not in sys.argv or "--dry-run" in sys.argv
     enforce(sys.argv[1], dry_run=dry)

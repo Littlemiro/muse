@@ -4,11 +4,18 @@ After=network.target
 
 [Service]
 Type=simple
-User=%(USER)s
-ExecStart=/usr/bin/python3 /opt/muse/muse-mcp-server.py --port 8768 --skills-dir /opt/muse/skills
+User=muse
+ExecStart=/usr/bin/python3 /opt/muse/muse-mcp-server.py --host 127.0.0.1 --port 8768 --skills-dir /var/lib/muse/active/current
 WorkingDirectory=/opt/muse
 Restart=always
 RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/opt/muse
+ReadOnlyPaths=/var/lib/muse
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
 
 [Install]
 WantedBy=multi-user.target

@@ -1,4 +1,6 @@
-# MUSE Skill 格式规范
+# MUSE Skill 格式规范与 Hermes 扩展
+
+MUSE 不替代 [Agent Skills](https://agentskills.io/) 的基础格式。`SKILL.md` 应保持跨 Agent 可读；MUSE 的分类、风险、来源、测试和审批信息属于本地治理元数据，不应成为其他 Agent 使用技能的硬依赖。
 
 ## 目录结构
 
@@ -41,6 +43,23 @@ trigger_keywords: [my, trigger, words]
 ---
 ```
 
+推荐把 MUSE 专属字段放在 `metadata.muse`，或放在技能目录旁的本地治理文件中：
+
+```yaml
+metadata:
+  muse:
+    primary_category: devops_infrastructure
+    tags: [automation, local-file]
+    risk_level: medium
+    destructive: false
+    requires_auth: false
+    requires_network: false
+    maturity: experimental
+    maintenance: active
+```
+
+这些字段是声明，不是权限。真正的批准状态、来源 hash 和 release 历史由本地 `muse-console.py` 状态目录保存，不能由技能正文自行声明为 trusted。
+
 | 字段 | 说明 | 默认值 |
 |------|------|--------|
 | `version` | 版本号 | `0.1.0` |
@@ -71,10 +90,14 @@ trigger_keywords: [my, trigger, words]
 
 ## 外部技能目录
 
-对于 Hermes Agent，可以通过 `config.yaml` 加载外部技能目录：
+对于 Hermes Agent，可以通过 `config.yaml` 加载 MUSE 的 approved export：
 
 ```yaml
 skills:
   external_dirs:
-    - path: /path/to/your/skills
+    - /path/to/.hermes/.muse/active/current
 ```
+
+MUSE 不会自动修改 Hermes 配置。使用 `python3 muse-console.py config --target <activation-root>` 获取配置片段。
+
+Hermes 的本地 `skills/` 优先于 `external_dirs`。要让 approved export 真正成为生效版本，应使用本地技能目录为空的 profile，或确保 source 不在该 profile 的 primary skills 目录中。

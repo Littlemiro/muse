@@ -1,7 +1,12 @@
 [Unit]
-Description=Sync MUSE MCP skills from GitHub
+Description=Audit MUSE MCP skills without automatic network sync
 [Service]
 Type=oneshot
-User=%(USER)s
-WorkingDirectory=/opt/muse/skills
-ExecStart=/usr/bin/git pull --rebase --autostash origin main
+User=muse
+WorkingDirectory=/opt/muse
+ExecStart=/usr/bin/python3 /opt/muse/muse-console.py audit --root /opt/muse/skills --state-dir /var/lib/muse
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/muse
