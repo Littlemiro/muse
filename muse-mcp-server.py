@@ -12,9 +12,23 @@ Config env vars:
     SKILLS_DIR    (default: auto-detect ~/.hermes/.muse/active/current/)
 """
 
-import os, sys, re, argparse
+import argparse
+import os
+import re
+import stat
+import sys
 from pathlib import Path
 from typing import Any
+
+try:
+    import yaml
+except ImportError as exc:  # pragma: no cover - installation error
+    raise SystemExit("MUSE MCP bridge requires PyYAML. Install requirements.txt first.") from exc
+
+
+FRONTMATTER_RE = re.compile(r"^---\s*\r?\n(.*?)\r?\n---(?:\r?\n|$)", re.DOTALL)
+NAME_RE = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
+MAX_SKILL_MD_BYTES = 4 * 1024 * 1024
 
 # ── Path resolution ──────────────────────────────────────────────────
 
@@ -46,6 +60,7 @@ def is_approved_export(path: Path) -> bool:
 def find_all_skills(skills_dir: Path) -> list[dict[str, Any]]:
     """Scan skills directory for all SKILL.md files, return parsed list."""
     skills = []
+    seen_names: set[str] = set()
     if not skills_dir.exists():
         print(f"[muse-mcp] WARNING: Skills dir not found: {skills_dir}", file=sys.stderr)
         return skills
@@ -58,8 +73,15 @@ def find_all_skills(skills_dir: Path) -> list[dict[str, Any]]:
                 print(f"[muse-mcp] Skipping out-of-root or linked skill: {sk_path}", file=sys.stderr)
                 continue
             meta = parse_skill_md(sk_path)
-            if meta and meta.get("name"):
-                skills.append(meta)
+            if not meta:
+                print(f"[muse-mcp] Skipping invalid skill document: {sk_path}", file=sys.stderr)
+                continue
+            name = meta["name"]
+            if name in seen_names:
+                print(f"[muse-mcp] Skipping duplicate skill name: {name}", file=sys.stderr)
+                continue
+            seen_names.add(name)
+            skills.append(meta)
         except Exception as e:
             print(f"[muse-mcp] Skipping {sk_path}: {e}", file=sys.stderr)
 
@@ -68,40 +90,40 @@ def find_all_skills(skills_dir: Path) -> list[dict[str, Any]]:
 
 def parse_skill_md(path: Path) -> dict[str, Any] | None:
     """Parse a SKILL.md file, extract frontmatter + body."""
-    raw = path.read_text("utf-8", errors="replace")
-    fm_match = re.match(r"^---\s*\n(.*?)\n---", raw, re.DOTALL)
+    try:
+        file_stat = path.lstat()
+        if path.is_symlink() or not stat.S_ISREG(file_stat.st_mode):
+            return None
+        if file_stat.st_size > MAX_SKILL_MD_BYTES:
+            return None
+        raw = path.read_text("utf-8", errors="replace")
+    except OSError:
+        return None
+
+    fm_match = FRONTMATTER_RE.match(raw)
     if not fm_match:
         return None
 
-    fm_text = fm_match.group(1)
     try:
-        import yaml
-        meta = yaml.safe_load(fm_text) or {}
-    except Exception:
-        meta = {}
-        for line in fm_text.strip().split("\n"):
-            if ":" in line:
-                k, _, v = line.partition(":")
-                meta[k.strip()] = v.strip().strip("\"'")
-
+        meta = yaml.safe_load(fm_match.group(1)) or {}
+    except yaml.YAMLError:
+        return None
     if not isinstance(meta, dict):
-        meta = {}
+        return None
 
     body_start = fm_match.end()
     body = raw[body_start:].strip()
+    name_value = meta.get("name")
+    description_value = meta.get("description")
+    name = name_value.strip() if isinstance(name_value, str) else ""
+    description = description_value.strip() if isinstance(description_value, str) else ""
+    if not name or not NAME_RE.fullmatch(name) or not description or not body:
+        return None
 
     # Compute category path for display
-    try:
-        parts = path.parent.parts
-        # Find where "skills" is in the path to get relative path
-        for i, p in enumerate(parts):
-            if p.lower() == "skills":
-                rel_parts = parts[i+1:]
-                break
-        else:
-            rel_parts = [path.parent.name]
-    except Exception:
-        rel_parts = [path.parent.name]
+    parts = path.parent.parts
+    skills_index = next((i for i, part in enumerate(parts) if part.lower() == "skills"), None)
+    rel_parts = parts[skills_index + 1:] if skills_index is not None else (path.parent.name,)
 
     metadata = meta.get("metadata", {})
     if not isinstance(metadata, dict):
@@ -114,16 +136,16 @@ def parse_skill_md(path: Path) -> dict[str, Any] | None:
     if not isinstance(tags, list):
         tags = []
     else:
-        tags = [str(item) for item in tags]
+        tags = [str(item).strip() for item in tags if str(item).strip()]
     trigger_keywords = meta.get("trigger_keywords", [])
     if not isinstance(trigger_keywords, list):
         trigger_keywords = []
     else:
-        trigger_keywords = [str(item) for item in trigger_keywords]
+        trigger_keywords = [str(item).strip() for item in trigger_keywords if str(item).strip()]
 
     skill_info = {
-        "name": str(meta.get("name", path.parent.name)),
-        "description": str(meta.get("description", "")),
+        "name": name,
+        "description": description,
         "version": str(meta.get("version", "0.0.0")),
         "author": str(meta.get("author", "unknown")),
         "category": str(hermes.get("category", "")),
@@ -164,6 +186,12 @@ def create_mcp_server(skills_dir: Path, host: str = "127.0.0.1", port: int = 876
         raise SystemExit("MCP bridge requires the optional dependencies in requirements.txt") from exc
 
     skills_list = find_all_skills(skills_dir)
+    for skill in skills_list:
+        skill["_search_text"] = " ".join(
+            [skill["name"], skill["description"], skill["category"], *skill["tags"], *skill["trigger_keywords"]]
+        ).casefold()
+        skill["_category_key"] = skill["category"].casefold()
+        skill["_tag_keys"] = {tag.casefold() for tag in skill["tags"]}
     print(f"[muse-mcp] Loaded {len(skills_list)} skills from {skills_dir}", file=sys.stderr)
 
     server = FastMCP(
@@ -215,12 +243,11 @@ To browse available skills: call `prompts/list`.
         """
         results = skills_list
         if query:
-            q = query.lower()
-            results = [s for s in results if q in s["name"].lower() or q in s["description"].lower() or q in str(s["tags"]).lower() or q in s["category"].lower()]
+            results = [s for s in results if query.casefold() in s["_search_text"]]
         if category:
-            results = [s for s in results if s["category"].lower() == category.lower()]
+            results = [s for s in results if s["_category_key"] == category.casefold()]
         if tag:
-            results = [s for s in results if tag.lower() in [t.lower() for t in s["tags"]]]
+            results = [s for s in results if tag.casefold() in s["_tag_keys"]]
 
         if not results:
             return "No skills found matching your criteria."

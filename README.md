@@ -30,6 +30,9 @@ hermes profile create muse --no-skills
 # 3. 先只读审计原 profile 的技能，不会改源文件
 python3 muse-console.py audit --root ~/.hermes/skills --state-dir ~/.hermes/.muse
 
+# 3b. 对单个 skill 做结构/拆分建议审计；只读，不移动或删除文件
+python3 muse-console.py refactor-audit ~/.hermes/skills/research/my-skill
+
 # 4. 查看技能并批准一个没有变化的版本
 python3 muse-console.py list --state-dir ~/.hermes/.muse
 python3 muse-console.py approve <skill-name> --state-dir ~/.hermes/.muse
@@ -80,7 +83,7 @@ Hermes 现在也有 Skills Hub、`skills audit`、来源/hash lock 和原生 bun
 |------|------|
 | `SPEC.md` | MUSE SKILL.md 格式规范（frontmatter 标准 + 目录结构） |
 | `CLASSIFICATION.md` | 12 分类 + 多维标签 + 自生长分类体系 |
-| `muse-console.py` | 发现、审计、批准、bundle、版本导出和回滚 |
+| `muse-console.py` | 发现、审计、结构建议、批准、bundle、版本导出和回滚 |
 | `muse-enforce.py` | 安全默认的格式审计器；写入需要显式 `--fix` |
 | `muse-mcp-server.py` | 可选 MCP bridge；默认只监听 loopback |
 | `requirements.txt` | Python 依赖 |

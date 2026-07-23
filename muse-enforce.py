@@ -107,50 +107,15 @@ def preprocess_fm(text):
     return '\n'.join(new_lines)
 
 
-def needs_quoting(val):
-    if not isinstance(val, str):
-        return False
-    return any(ch in val for ch in [': ', ':', '#', '[', ']', '{', '}', ',', '&', '*', '?', '|', '!', '%', '@', '`'])
-
-
 def dict_to_yaml(d):
-    """Serialize a dict to YAML frontmatter, properly quoting values with YAML special chars."""
-    lines = ["---"]
-    for k, v in d.items():
-        if isinstance(v, list):
-            if not v:
-                lines.append(f"{k}:")
-            else:
-                lines.append(f"{k}:")
-                for item in v:
-                    sv = str(item) if not isinstance(item, str) else item
-                    if isinstance(item, str) and needs_quoting(item):
-                        sv = '"' + item.replace('"', '\\"') + '"'
-                    lines.append(f"  - {sv}")
-        elif isinstance(v, bool):
-            lines.append(f"{k}: {'true' if v else 'false'}")
-        elif v is None:
-            lines.append(f"{k}:")
-        elif isinstance(v, (int, float)):
-            lines.append(f"{k}: {v}")
-        elif isinstance(v, str):
-            if needs_quoting(v):
-                escaped = v.replace('"', '\\"')
-                lines.append(f'{k}: "{escaped}"')
-            else:
-                lines.append(f"{k}: {v}")
-        elif isinstance(v, dict):
-            flow = yaml.dump(v, default_flow_style=True, allow_unicode=True, width=float('inf')).strip()
-            lines.append(f"{k}: {flow}")
-        else:
-            lines.append(f"{k}: {str(v)}")
-    lines.append("---")
-    return "\n".join(lines)
+    """Serialize frontmatter with the same YAML library used to parse it."""
+    body = yaml.safe_dump(d, allow_unicode=True, sort_keys=False, default_flow_style=False).rstrip()
+    return f"---\n{body}\n---"
 
 
 # ── Inference ──────────────────────────────────────────────────────
 
-def infer_keywords(name, cat, desc, body):
+def infer_keywords(name, cat, desc):
     keywords = []
     parts = re.split(r'[-_\s]', name)
     keywords.extend(p for p in parts if len(p) > 1 and p.lower() not in ['for', 'the', 'and', 'with'])
@@ -169,7 +134,7 @@ def infer_keywords(name, cat, desc, body):
     return list(dict.fromkeys(keywords))
 
 
-def infer_tags(cat, name, desc):
+def infer_tags(cat, desc):
     tags = list(CATEGORY_TAGS.get(cat, [cat]))
     if desc:
         dl = desc.lower()
@@ -179,7 +144,7 @@ def infer_tags(cat, name, desc):
     return tags[:6]
 
 
-def improve_desc(current_desc, name, cat, body):
+def improve_desc(current_desc, body):
     """Return (new_desc, changed) — makes description imperative and ≤64 chars."""
     if not current_desc or not isinstance(current_desc, str):
         current_desc = ""
@@ -260,14 +225,14 @@ def enforce(skills_dir, dry_run=False):
         fm_raw = preprocess_fm(m.group(1))
         try:
             fm = yaml.safe_load(fm_raw)
-        except:
+        except yaml.YAMLError:
             continue
         if not isinstance(fm, dict):
             continue
 
         body = text[m.end():].strip()
         desc = fm.get("description", "") or ""
-        tags = infer_tags(cat, name, desc)
+        tags = infer_tags(cat, desc)
         all_skills.append({
             "path": skill_path, "cat": cat, "name": name,
             "desc": desc, "tags": tags, "fm": fm, "body": body
@@ -284,7 +249,7 @@ def enforce(skills_dir, dry_run=False):
         body = s["body"]
 
         # 1. Description quality
-        new_desc, dc = improve_desc(s["desc"], s["name"], s["cat"], body)
+        new_desc, dc = improve_desc(s["desc"], body)
         if dc:
             fm["description"] = new_desc
             changes["desc"] += 1
@@ -292,7 +257,7 @@ def enforce(skills_dir, dry_run=False):
 
         # 2. Trigger keywords
         if not fm.get("trigger_keywords"):
-            kw = infer_keywords(s["name"], s["cat"], new_desc or s["desc"], body)
+            kw = infer_keywords(s["name"], s["cat"], new_desc or s["desc"])
             if kw:
                 fm["trigger_keywords"] = kw[:10]
                 changes["trigger"] += 1
@@ -308,7 +273,7 @@ def enforce(skills_dir, dry_run=False):
         if not isinstance(hermes, dict):
             hermes = {}
 
-        tags = infer_tags(s["cat"], s["name"], new_desc or s["desc"])
+        tags = infer_tags(s["cat"], new_desc or s["desc"])
         if not hermes.get("tags"):
             hermes["tags"] = tags
             changes["tags"] += 1

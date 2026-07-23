@@ -59,6 +59,9 @@ TEXT_SUFFIXES = {
 }
 MAX_INSPECT_BYTES = 2 * 1024 * 1024
 MAX_SKILL_MD_BYTES = 4 * 1024 * 1024
+REFACTOR_MAX_LINES = 500
+MARKDOWN_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+REFERENCE_TOKEN_RE = re.compile(r"(?<![\w/])references/[A-Za-z0-9._/-]+")
 
 
 def now_iso() -> str:
@@ -504,23 +507,6 @@ def load_json(path: Path, default: dict[str, Any] | None = None) -> dict[str, An
     return value
 
 
-def save_json(path: Path, value: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
-            json.dump(value, handle, ensure_ascii=False, indent=2, sort_keys=True)
-            handle.write("\n")
-        os.replace(temporary, path)
-        try:
-            path.chmod(0o600)
-        except OSError:
-            pass
-    finally:
-        if os.path.exists(temporary):
-            os.unlink(temporary)
-
-
 def save_text(path: Path, value: str) -> None:
     """Atomically write generated text without following an existing symlink."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -536,6 +522,10 @@ def save_text(path: Path, value: str) -> None:
     finally:
         if os.path.exists(temporary):
             os.unlink(temporary)
+
+
+def save_json(path: Path, value: dict[str, Any]) -> None:
+    save_text(path, json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
 
 
 def state_path(state_dir: Path) -> Path:
@@ -934,6 +924,164 @@ def command_config(args: argparse.Namespace) -> int:
     return 0
 
 
+def refactor_audit(skill_dir: Path) -> dict[str, Any]:
+    """Return read-only structure and split suggestions for one skill."""
+    root = normalize_path(skill_dir)
+    marker = root / "SKILL.md"
+    metadata, body, parse_findings = parse_skill_file(marker)
+    findings = list(parse_findings)
+    raw = ""
+    marker_bytes = 0
+    try:
+        marker_stat = marker.lstat()
+        marker_bytes = marker_stat.st_size
+        if stat.S_ISREG(marker_stat.st_mode) and marker_bytes <= MAX_SKILL_MD_BYTES:
+            raw = marker.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        pass
+
+    if not root.is_dir():
+        findings.append(Finding("skill_dir_missing", "critical", "Skill directory does not exist", str(root)))
+
+    references_root = root / "references"
+    reference_files: list[Path] = []
+    reference_symlinks: list[Path] = []
+    reference_special: list[Path] = []
+    if references_root.is_dir():
+        reference_files, reference_symlinks, reference_special = iter_files(references_root)
+
+    linked: set[str] = set()
+    for target in MARKDOWN_LINK_RE.findall(raw):
+        target = target.split("#", 1)[0].strip().rstrip(".,;:)")
+        if target.startswith("references/"):
+            linked.add(target)
+    linked.update(REFERENCE_TOKEN_RE.findall(raw))
+
+    refs_root_resolved = references_root.resolve()
+    missing: list[str] = []
+    unsafe: list[str] = []
+    for target in sorted(linked):
+        resolved = (root / target).resolve()
+        if not is_within(resolved, refs_root_resolved):
+            unsafe.append(target)
+        elif not resolved.is_file():
+            missing.append(target)
+
+    existing = {
+        path.relative_to(root).as_posix(): path
+        for path in reference_files
+    }
+    orphan = sorted(set(existing) - linked)
+    nested = sorted(
+        relative for relative in existing
+        if len(Path(relative).relative_to("references").parts) > 1
+    )
+
+    body_blocks = {
+        re.sub(r"\s+", " ", block).strip()
+        for block in re.split(r"\n\s*\n", body)
+        if len(block.strip()) >= 80
+    }
+    duplicate_refs: list[str] = []
+    for path in reference_files:
+        reference_text = inspect_text(path)
+        if not reference_text:
+            continue
+        reference_blocks = {
+            re.sub(r"\s+", " ", block).strip()
+            for block in re.split(r"\n\s*\n", reference_text)
+            if len(block.strip()) >= 80
+        }
+        if body_blocks & reference_blocks:
+            duplicate_refs.append(path.relative_to(root).as_posix())
+
+    command_lines = re.findall(
+        r"(?im)^\s*(?:\$\s*)?(?:curl|wget|pip(?:3)?|npm|docker|systemctl|git|python(?:3)?|chmod|ssh)\b",
+        raw,
+    )
+    code_fences = raw.count("```") // 2
+    safety_signals = [
+        code for code, _, pattern in DANGEROUS_PATTERNS
+        if re.search(pattern, raw)
+    ]
+    if safety_signals:
+        findings.append(Finding(
+            "safety_rules_present", "info",
+            "Keep safety constraints and approval rules in SKILL.md when extracting detail",
+            str(marker), ", ".join(safety_signals),
+        ))
+    if marker_bytes and raw.count("\n") + 1 > REFACTOR_MAX_LINES:
+        findings.append(Finding(
+            "skill_md_long", "warning",
+            f"SKILL.md exceeds the recommended {REFACTOR_MAX_LINES}-line working limit",
+            str(marker), str(raw.count("\n") + 1),
+        ))
+    if missing:
+        findings.append(Finding("reference_missing", "warning", "SKILL.md points to missing reference files", str(marker), ", ".join(missing)))
+    if unsafe:
+        findings.append(Finding("reference_escape", "warning", "SKILL.md contains a reference path outside references/", str(marker), ", ".join(unsafe)))
+    if orphan:
+        findings.append(Finding("reference_orphan", "info", "Reference files are not linked from SKILL.md", str(references_root), ", ".join(orphan)))
+    if nested:
+        findings.append(Finding("reference_nested", "info", "Keep reference links one level below SKILL.md when possible", str(references_root), ", ".join(nested)))
+    if code_fences >= 4 or len(command_lines) >= 8:
+        findings.append(Finding(
+            "inline_detail", "info",
+            "SKILL.md contains substantial command or code detail; inspect whether it belongs in references/",
+            str(marker), f"code_fences={code_fences}, command_lines={len(command_lines)}",
+        ))
+    if duplicate_refs:
+        findings.append(Finding(
+            "duplicate_reference_content", "info",
+            "SKILL.md shares long blocks with reference files; remove duplication after review",
+            str(marker), ", ".join(sorted(duplicate_refs)),
+        ))
+
+    status = "blocked" if any(item.severity == "critical" for item in findings) else (
+        "review" if any(item.severity == "warning" for item in findings) else "ready"
+    )
+    return {
+        "version": VERSION,
+        "skill_dir": str(root),
+        "name": str(metadata.get("name", root.name)) if isinstance(metadata, dict) else root.name,
+        "status": status,
+        "skill_md": {
+            "bytes": marker_bytes,
+            "lines": raw.count("\n") + 1 if raw else 0,
+            "recommended_max_lines": REFACTOR_MAX_LINES,
+            "code_fences": code_fences,
+            "command_lines": len(command_lines),
+        },
+        "references": {
+            "files": sorted(existing),
+            "linked": sorted(linked),
+            "missing": missing,
+            "orphan": orphan,
+            "nested": nested,
+            "symlinks": sorted(path.relative_to(root).as_posix() for path in reference_symlinks),
+            "special_files": sorted(path.relative_to(root).as_posix() for path in reference_special),
+        },
+        "findings": [item.to_dict() for item in findings],
+    }
+
+
+def command_refactor_audit(args: argparse.Namespace) -> int:
+    report = refactor_audit(args.skill_dir)
+    if args.json:
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    else:
+        skill = report["skill_md"]
+        refs = report["references"]
+        print(f"Refactor audit: {report['name']} [{report['status']}]")
+        print(f"SKILL.md: {skill['lines']} lines, {skill['bytes']} bytes")
+        print(f"References: {len(refs['files'])} files, {len(refs['linked'])} linked, {len(refs['missing'])} missing, {len(refs['orphan'])} orphan")
+        for finding in report["findings"]:
+            print(f"- {finding['severity']}: {finding['message']} ({finding['code']})")
+    if report["status"] == "blocked" or (args.strict and report["status"] != "ready"):
+        return 1
+    return 0
+
+
 def add_common(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--state-dir", type=Path, default=default_state_dir(), help="Local MUSE state directory")
     parser.add_argument("--root", type=Path, action="append", help="Skill root; repeat for multiple roots")
@@ -943,6 +1091,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="MUSE local console for Hermes skill assets")
     parser.add_argument("--version", action="version", version=VERSION)
     commands = parser.add_subparsers(dest="command", required=True)
+
+    refactor = commands.add_parser("refactor-audit", help="Read-only audit of one skill's structure and reference split")
+    refactor.add_argument("skill_dir", type=Path)
+    refactor.add_argument("--json", action="store_true")
+    refactor.add_argument("--strict", action="store_true", help="Treat advisory findings as a failing result")
+    refactor.set_defaults(func=command_refactor_audit)
 
     scan = commands.add_parser("scan", help="Read-only discover and audit skill roots")
     add_common(scan)

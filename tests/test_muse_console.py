@@ -206,6 +206,39 @@ class MuseConsoleTests(unittest.TestCase):
             self.assertEqual(muse.yaml.safe_load((output_dir / "research.yaml").read_text(encoding="utf-8"))["skills"], ["one"])
             self.assertEqual(muse.yaml.safe_load((output_dir / "productivity.yaml").read_text(encoding="utf-8"))["skills"], ["two"])
 
+    def test_refactor_audit_is_read_only_and_reports_structure(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            directory = write_skill(root, "research", "long-skill", "\n".join(f"Step {i}: explain the workflow." for i in range(510)))
+            references = directory / "references"
+            references.mkdir()
+            (references / "guide.md").write_text("Detailed guide.\n", encoding="utf-8")
+            marker = directory / "SKILL.md"
+            marker.write_text(
+                marker.read_text(encoding="utf-8") + "\nSee [the guide](references/guide.md).\n",
+                encoding="utf-8",
+            )
+            before = sorted(path.relative_to(directory).as_posix() for path in directory.rglob("*"))
+
+            report = muse.refactor_audit(directory)
+
+            after = sorted(path.relative_to(directory).as_posix() for path in directory.rglob("*"))
+            self.assertEqual(before, after)
+            self.assertEqual(report["status"], "review")
+            self.assertGreater(report["skill_md"]["lines"], muse.REFACTOR_MAX_LINES)
+            self.assertEqual(report["references"]["missing"], [])
+            self.assertEqual(report["references"]["orphan"], [])
+            self.assertIn("references/guide.md", report["references"]["linked"])
+            self.assertIn("skill_md_long", {item["code"] for item in report["findings"]})
+
+    def test_refactor_audit_blocks_unsafe_reference_path(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            directory = write_skill(root, "research", "unsafe-ref", "See [outside](references/../outside.md).")
+            report = muse.refactor_audit(directory)
+            self.assertEqual(report["status"], "review")
+            self.assertIn("reference_escape", {item["code"] for item in report["findings"]})
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -42,6 +42,36 @@ class MuseMcpTests(unittest.TestCase):
             self.assertEqual(parsed["trigger_keywords"], ["three", "4"])
             self.assertIn("one, 2", muse_mcp.build_prompt_text(parsed))
 
+    def test_parser_accepts_crlf_but_rejects_incomplete_skill_documents(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            valid = root / "valid"
+            valid.mkdir()
+            marker = valid / "SKILL.md"
+            marker.write_text(
+                "---\r\n"
+                "name: valid\r\n"
+                "description: A valid skill\r\n"
+                "---\r\n\r\n"
+                "Read and verify.\r\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(muse_mcp.parse_skill_md(marker)["name"], "valid")
+
+            invalid = root / "invalid"
+            invalid.mkdir()
+            (invalid / "SKILL.md").write_text(
+                "---\nname: ../escape\ndescription: Bad\n---\n\nBody\n",
+                encoding="utf-8",
+            )
+            oversized = root / "oversized"
+            oversized.mkdir()
+            (oversized / "SKILL.md").write_text(
+                "x" * (muse_mcp.MAX_SKILL_MD_BYTES + 1),
+                encoding="utf-8",
+            )
+            self.assertEqual([item["name"] for item in muse_mcp.find_all_skills(root)], ["valid"])
+
 
 if __name__ == "__main__":
     unittest.main()
