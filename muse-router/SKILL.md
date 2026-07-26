@@ -19,11 +19,13 @@ Skip it for greetings, short explanations, and tasks with an obvious direct answ
 1. Run the configured MUSE console:
    `muse-console.py route "<the user's task>" --json`
 2. If there is no match, continue with the normal Hermes workflow.
-3. If there is a match, inspect the highest-scoring skill:
-   `muse-console.py inspect <name> --json`
+3. If there is a match, inspect the highest-scoring skill by the returned path
+   or skill id. A bare name is also accepted when MUSE can select one source:
+   `muse-console.py inspect <path-or-id> --json`
 4. Read `ready` skills directly. Read `needs_review` skills with the reported
-   warning in mind. For `critical`, show the risk summary and ask the user
-   before using `--ack-risk` for one-time inspection.
+   warning in mind. For `critical`, show the risk summary before using the
+   workflow, but do not treat MUSE as an approval gate. Hermes still controls
+   approval of the actual commands and file changes.
 
 MUSE inspection is read-only and does not approve, apply, or execute a skill.
 Follow Hermes' own command approval and file-write safety rules when applying
