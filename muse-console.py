@@ -88,6 +88,11 @@ RISK_TAG_BY_FINDING = {
     "symlink_present": {"filesystem"},
     "special_file": {"filesystem"},
 }
+SOURCE_ORDER = {
+    "hermes-primary": 0,
+    "muse-state-or-release": 1,
+    "external": 2,
+}
 
 
 def now_iso() -> str:
@@ -1034,7 +1039,16 @@ def route_matches(records: list[SkillRecord], task: str, limit: int = 3) -> list
     scored = [(route_score(record, task), record) for record in records]
     scored = [(score, record) for score, record in scored if score > 0]
     status_order = {"ready": 0, "needs_review": 1, "critical": 2}
-    return sorted(scored, key=lambda item: (-item[0], status_order.get(item[1].audit_status, 3), item[1].name))[:limit]
+    return sorted(
+        scored,
+        key=lambda item: (
+            -item[0],
+            SOURCE_ORDER.get(item[1].source, 3),
+            status_order.get(item[1].audit_status, 3),
+            item[1].name,
+            item[1].skill_dir,
+        ),
+    )[:limit]
 
 
 def command_route(args: argparse.Namespace) -> int:

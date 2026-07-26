@@ -166,6 +166,20 @@ class MuseConsoleTests(unittest.TestCase):
                 item["left"] == item["right"] for item in duplicate_report["relationships"]
             ))
 
+    def test_route_prefers_hermes_primary_over_external_on_a_tie(self):
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp) / "hermes"
+            primary = home / "skills"
+            external = Path(temp) / "external"
+            write_skill(primary, "agents", "opencli", "OpenCLI browser automation https://example.com")
+            write_skill(external, "agents", "opencli", "OpenCLI browser automation")
+            with patch.object(muse, "safe_home", return_value=home):
+                records, errors = muse.discover([primary, external])
+            self.assertEqual(errors, [])
+            matches = muse.route_matches(records, "opencli browser", limit=2)
+            self.assertEqual(matches[0][1].source, "hermes-primary")
+            self.assertEqual(matches[1][1].source, "external")
+
     def test_inspect_reads_review_skill_without_approval_and_scripts_are_opt_in(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp) / "skills"
