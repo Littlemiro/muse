@@ -10,15 +10,9 @@ What it does:
   1. Reads every SKILL.md in the directory tree
   2. Parses frontmatter with YAML-safe preprocessing (handles colons in values)
   3. Checks MUSE mandatory fields (name, description)
-  4. Auto-fills recommended fields when missing:
-     - version → "0.1.0"
-     - author → "Hermes Agent"
-     - license → "MIT"
-     - platforms → ["linux", "macos", "windows"]
-     - metadata.hermes.tags → inferred from category + description
-     - trigger_keywords → inferred from name + category + description
-     - metadata.hermes.related_skills → from same-category + tag overlap
-  5. Fixes description quality (imperative, ≤64 chars where possible)
+  4. Reports missing optional metadata without inventing provenance, license,
+     platform support, trigger keywords, or cross-skill relationships
+  5. With explicit --fix, normalizes description quality only
   6. Generates an audit report and returns a summary
 
 Requirements: Python 3.10+ (yaml, pathlib)
@@ -26,12 +20,14 @@ Requirements: Python 3.10+ (yaml, pathlib)
 
 import re
 import sys
+import os
 import yaml
 from pathlib import Path
 
 # ── Constants ──────────────────────────────────────────────────────
 
 FM_RE = re.compile(r'^---\s*\r?\n(.*?)\r?\n---', re.DOTALL)
+EXCLUDED_DIRS = {".archive", ".git", ".muse", ".venv", "__pycache__", "node_modules", "backup", "backups", "release", "releases", "state"}
 
 IMPERATIVE_VERBS = {
     "use", "create", "configure", "set", "build", "run", "deploy",
@@ -206,6 +202,19 @@ def improve_desc(current_desc, body):
 
 # ── Main ───────────────────────────────────────────────────────────
 
+def iter_skill_markers(root):
+    root = Path(root)
+    for current, directories, filenames in os.walk(root, topdown=True, followlinks=False):
+        current_path = Path(current)
+        directories[:] = [
+            directory for directory in directories
+            if directory not in EXCLUDED_DIRS and not (current_path / directory).is_symlink()
+        ]
+        if "SKILL.md" in filenames:
+            marker = current_path / "SKILL.md"
+            if marker.is_file() and not marker.is_symlink():
+                yield marker
+
 def enforce(skills_dir, dry_run=False):
     skills_dir = Path(skills_dir)
     if not skills_dir.is_dir():
@@ -214,7 +223,7 @@ def enforce(skills_dir, dry_run=False):
 
     # Collect all skill metadata for cross-referencing
     all_skills = []
-    for skill_path in sorted(skills_dir.rglob("SKILL.md")):
+    for skill_path in sorted(iter_skill_markers(skills_dir)):
         text = skill_path.read_text(encoding='utf-8')
         cat = skill_path.parent.parent.name
         name = skill_path.parent.name
@@ -240,8 +249,7 @@ def enforce(skills_dir, dry_run=False):
 
     # Enforce
     report = []
-    changes = {"trigger": 0, "desc": 0, "tags": 0, "author": 0,
-               "license": 0, "platforms": 0, "related": 0}
+    changes = {"desc": 0}
 
     for s in all_skills:
         changed = False
@@ -255,64 +263,8 @@ def enforce(skills_dir, dry_run=False):
             changes["desc"] += 1
             changed = True
 
-        # 2. Trigger keywords
-        if not fm.get("trigger_keywords"):
-            kw = infer_keywords(s["name"], s["cat"], new_desc or s["desc"])
-            if kw:
-                fm["trigger_keywords"] = kw[:10]
-                changes["trigger"] += 1
-                changed = True
-
-        # 3. Metadata tags
-        meta = fm.get("metadata")
-        if isinstance(meta, str):
-            meta = {}
-        if not isinstance(meta, dict):
-            meta = {}
-        hermes = meta.get("hermes", {})
-        if not isinstance(hermes, dict):
-            hermes = {}
-
-        tags = infer_tags(s["cat"], new_desc or s["desc"])
-        if not hermes.get("tags"):
-            hermes["tags"] = tags
-            changes["tags"] += 1
-            changed = True
-
-        # 4. Related skills
-        if not hermes.get("related_skills"):
-            my_tags = set(tags)
-            candidates = []
-            for other in all_skills:
-                if other["name"] == s["name"]:
-                    continue
-                if other["cat"] == s["cat"]:
-                    candidates.append(other["name"])
-                elif len(set(other["tags"]) & my_tags) >= 2:
-                    if other["name"] not in candidates:
-                        candidates.append(other["name"])
-            if candidates:
-                hermes["related_skills"] = candidates[:5]
-                changes["related"] += 1
-                changed = True
-
-        if hermes:
-            meta["hermes"] = hermes
-        fm["metadata"] = meta
-
-        # 5-7. Author, license, platforms
-        if not fm.get("author"):
-            fm["author"] = "Hermes Agent"
-            changes["author"] += 1
-            changed = True
-        if not fm.get("license"):
-            fm["license"] = "MIT"
-            changes["license"] += 1
-            changed = True
-        if not fm.get("platforms"):
-            fm["platforms"] = ["linux", "macos", "windows"]
-            changes["platforms"] += 1
-            changed = True
+        # Optional provenance, license, platform and routing metadata are
+        # intentionally advisory. MUSE must not invent them in source files.
 
         if changed and not dry_run:
             body_written = s["path"].read_text(encoding='utf-8')

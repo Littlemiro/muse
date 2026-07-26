@@ -46,7 +46,7 @@ except ImportError as exc:  # pragma: no cover - exercised by installation error
     raise SystemExit("MUSE console requires PyYAML. Install requirements.txt first.") from exc
 
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 FRONTMATTER_RE = re.compile(r"^---\s*\r?\n(.*?)\r?\n---(?:\r?\n|$)", re.DOTALL)
 URL_RE = re.compile(r'''https?://[^\s<>"'`)\]]+''', re.IGNORECASE)
 NAME_RE = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
@@ -64,6 +64,10 @@ MAX_SKILL_MD_BYTES = 4 * 1024 * 1024
 MAX_INSPECT_OUTPUT_BYTES = 2 * 1024 * 1024
 MAX_INSPECT_SCRIPT_BYTES = 256 * 1024
 REFACTOR_MAX_LINES = 500
+EXCLUDED_DISCOVERY_DIRS = frozenset({
+    ".archive", ".git", ".hg", ".muse", ".venv", "__pycache__",
+    "node_modules", "backup", "backups", "release", "releases", "state",
+})
 MARKDOWN_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 REFERENCE_TOKEN_RE = re.compile(r"(?<![\w/])references/[A-Za-z0-9._/-]+")
 RISK_TAG_BY_FINDING = {
@@ -88,6 +92,16 @@ RISK_TAG_BY_FINDING = {
 
 def now_iso() -> str:
     return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()
+
+
+def configure_stdio() -> None:
+    """Keep JSON and inspected Chinese skill text usable on Windows consoles."""
+    if sys.platform != "win32":
+        return
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure:
+            reconfigure(encoding="utf-8", errors="replace")
 
 
 def safe_home() -> Path:
@@ -177,6 +191,7 @@ class SkillRecord:
     name: str
     description: str
     root: str
+    source: str
     skill_dir: str
     rel_dir: str
     category: str
@@ -205,6 +220,7 @@ class SkillRecord:
             "name": self.name,
             "description": redact(self.description, 1024),
             "root": self.root,
+            "source": self.source,
             "skill_dir": self.skill_dir,
             "rel_dir": self.rel_dir,
             "category": self.category,
@@ -360,7 +376,18 @@ def infer_category(root: Path, skill_dir: Path, metadata: dict[str, Any]) -> str
     return parts[0] if len(parts) > 1 else "uncategorized"
 
 
-def audit_skill(root: Path, marker: Path) -> SkillRecord:
+def source_kind(root: Path) -> str:
+    """Describe where a discovered skill came from without trusting its contents."""
+    root = normalize_path(root)
+    home = normalize_path(safe_home())
+    if root == home / "skills":
+        return "hermes-primary"
+    if is_within(root, home / ".muse"):
+        return "muse-state-or-release"
+    return "external"
+
+
+def audit_skill(root: Path, marker: Path, source: str | None = None) -> SkillRecord:
     root = normalize_path(root)
     marker = marker.absolute()
     skill_dir = marker.parent
@@ -475,6 +502,7 @@ def audit_skill(root: Path, marker: Path) -> SkillRecord:
         name=name or skill_dir.name,
         description=description,
         root=str(root),
+        source=source or source_kind(root),
         skill_dir=str(skill_dir),
         rel_dir=relative_text,
         category=category,
@@ -503,12 +531,28 @@ def discover(roots: Iterable[Path]) -> tuple[list[SkillRecord], list[str]]:
         if not root.is_dir():
             errors.append(f"root_not_directory: {root}")
             continue
-        for marker in sorted(root.rglob("SKILL.md")):
-            marker = marker.absolute()
+        source = source_kind(root)
+        for current, directories, filenames in os.walk(root, topdown=True, followlinks=False):
+            current_path = Path(current)
+            special_marker = current_path / "SKILL.md"
+            if "SKILL.md" in directories:
+                directories.remove("SKILL.md")
+                marker = special_marker.absolute()
+                if marker not in seen_markers:
+                    seen_markers.add(marker)
+                    records.append(audit_skill(root, marker, source))
+            directories[:] = [
+                directory for directory in directories
+                if directory not in EXCLUDED_DISCOVERY_DIRS
+                and not (current_path / directory).is_symlink()
+            ]
+            if "SKILL.md" not in filenames:
+                continue
+            marker = (current_path / "SKILL.md").absolute()
             if marker in seen_markers:
                 continue
             seen_markers.add(marker)
-            records.append(audit_skill(root, marker))
+            records.append(audit_skill(root, marker, source))
     records = sorted(records, key=lambda item: (item.category, item.name, item.skill_id))
     by_name: dict[str, list[SkillRecord]] = {}
     for record in records:
@@ -516,13 +560,220 @@ def discover(roots: Iterable[Path]) -> tuple[list[SkillRecord], list[str]]:
     for name, matches in by_name.items():
         if len(matches) > 1:
             for record in matches:
-                add_finding(record.findings, "duplicate_name", "critical", f"Skill name is duplicated across scanned roots: {name}", record.skill_dir)
+                add_finding(record.findings, "duplicate_name", "warning", f"Skill name is duplicated across scanned roots: {name}", record.skill_dir)
     return records, errors
 
 
+GARDEN_STOPWORDS = {
+    "skill", "agent", "use", "help", "workflow", "workflows", "test", "tool", "tools", "the",
+    "and", "for", "with", "from", "this", "that", "任务", "帮助", "用于",
+}
+
+
+def garden_tokens(record: SkillRecord) -> set[str]:
+    value = " ".join([record.name, record.description, *record.tags])
+    return {token for token in route_tokens(value) if token not in GARDEN_STOPWORDS}
+
+
+def garden_member(record: SkillRecord) -> dict[str, Any]:
+    return {
+        "name": record.name,
+        "path": str(normalize_path(Path(record.skill_dir))),
+        "source": record.source,
+        "category": record.category,
+        "audit_status": record.audit_status,
+        "risk_tags": risk_tags_for_record(record),
+    }
+
+
+def garden_report(records: list[SkillRecord], errors: list[str] | None = None) -> dict[str, Any]:
+    """Build read-only cross-skill governance evidence.
+
+    Garden suggestions are deliberately conservative: they identify related
+    skills and possible maintenance work, but never merge, archive, delete or
+    rewrite a skill.
+    """
+    errors = errors or []
+    clusters: list[dict[str, Any]] = []
+    prefix_groups: dict[str, list[SkillRecord]] = {}
+    for record in records:
+        parts = [part for part in record.name.casefold().split("-") if part]
+        if len(parts) > 1:
+            prefix_groups.setdefault(parts[0], []).append(record)
+    exact_names = {record.name.casefold() for record in records}
+    for prefix in list(prefix_groups):
+        if prefix in exact_names:
+            umbrella = next(record for record in records if record.name.casefold() == prefix)
+            if umbrella not in prefix_groups[prefix]:
+                prefix_groups[prefix].append(umbrella)
+    for prefix, members in sorted(prefix_groups.items()):
+        if len(members) < 2:
+            continue
+        has_umbrella = any(item.name.casefold() == prefix for item in members)
+        recommendation = (
+            f"Review {prefix} as an umbrella skill and keep the other members as focused spokes or references."
+            if has_umbrella else
+            f"Review the {prefix} cluster for an umbrella skill or a clearer shared reference boundary."
+        )
+        clusters.append({
+            "key": prefix,
+            "kind": "name-prefix",
+            "members": [garden_member(item) for item in sorted(members, key=lambda item: item.name)],
+            "recommendation": recommendation,
+        })
+
+    name_groups: dict[str, list[SkillRecord]] = {}
+    for record in records:
+        name_groups.setdefault(record.name.casefold(), []).append(record)
+    for name, members in sorted(name_groups.items()):
+        if len(members) < 2:
+            continue
+        clusters.append({
+            "key": name,
+            "kind": "duplicate-source",
+            "members": [garden_member(item) for item in sorted(members, key=lambda item: (item.source, item.root, item.skill_dir))],
+            "recommendation": "Choose one canonical source or declare the other copy an intentional mirror before publishing a release.",
+        })
+
+    hash_groups: dict[str, list[SkillRecord]] = {}
+    for record in records:
+        if record.content_hash:
+            hash_groups.setdefault(record.content_hash, []).append(record)
+    for content_hash, members in sorted(hash_groups.items()):
+        if len(members) < 2:
+            continue
+        clusters.append({
+            "key": content_hash,
+            "kind": "identical-content",
+            "members": [garden_member(item) for item in sorted(members, key=lambda item: item.name)],
+            "recommendation": "Keep one canonical copy and make the other locations explicit mirrors or remove the duplicate after review.",
+        })
+
+    relationships: list[dict[str, Any]] = []
+    for index, left in enumerate(records):
+        left_tokens = garden_tokens(left)
+        if len(left_tokens) < 2:
+            continue
+        for right in records[index + 1:]:
+            if left.name.casefold() == right.name.casefold():
+                continue
+            shared = left_tokens & garden_tokens(right)
+            right_tokens = garden_tokens(right)
+            if len(shared) < 2 or not right_tokens:
+                continue
+            similarity = len(shared) / len(left_tokens | right_tokens)
+            if similarity < 0.32:
+                continue
+            relationships.append({
+                "kind": "trigger-or-description-overlap",
+                "left": left.name,
+                "right": right.name,
+                "shared_terms": sorted(shared),
+                "similarity": round(similarity, 3),
+                "recommendation": "Check trigger wording and decide whether these skills should be composed, narrowed, or merged.",
+            })
+    relationships.sort(key=lambda item: (-item["similarity"], item["left"], item["right"]))
+
+    maintenance: list[dict[str, Any]] = []
+    for record in records:
+        marker = Path(record.skill_dir) / "SKILL.md"
+        try:
+            raw = marker.read_text(encoding="utf-8", errors="replace")
+            lines = raw.count("\n") + 1
+        except OSError:
+            lines = 0
+        if lines > REFACTOR_MAX_LINES:
+            maintenance.append({
+                "kind": "skill-md-too-large",
+                "name": record.name,
+                "lines": lines,
+                "recommendation": "Move stable details into references/ and keep the main workflow concise.",
+            })
+        if record.file_count > 24:
+            maintenance.append({
+                "kind": "skill-file-count-high",
+                "name": record.name,
+                "file_count": record.file_count,
+                "recommendation": "Review whether this skill contains multiple capabilities that should be separate spokes.",
+            })
+
+    status_counts = {status: sum(record.audit_status == status for record in records) for status in ("ready", "needs_review", "critical")}
+    return {
+        "version": VERSION,
+        "generated_at": now_iso(),
+        "roots": sorted({record.root for record in records}),
+        "errors": errors,
+        "summary": {
+            "skills": len(records),
+            "status": status_counts,
+            "clusters": len(clusters),
+            "relationships": len(relationships),
+            "maintenance_items": len(maintenance),
+        },
+        "clusters": clusters,
+        "relationships": relationships[:100],
+        "maintenance": maintenance,
+        "principle": "MUSE proposes; Hermes or the user decides and performs lifecycle changes.",
+    }
+
+
+def command_garden(args: argparse.Namespace) -> int:
+    _, records, errors = current_scan(args.state_dir, args.root or None, save=False)
+    report = garden_report(records, errors)
+    if args.save:
+        state = load_json(state_path(args.state_dir), {"version": 1, "approvals": {}, "releases": []})
+        state["last_garden"] = report
+        args.state_dir.mkdir(parents=True, exist_ok=True)
+        save_json(state_path(args.state_dir), state)
+    if args.json:
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+        return 0
+    summary = report["summary"]
+    print(f"MUSE Garden: {summary['skills']} skills, {summary['clusters']} clusters, {summary['relationships']} overlap relationships")
+    print(f"Status: ready={summary['status']['ready']} needs_review={summary['status']['needs_review']} critical={summary['status']['critical']}")
+    for cluster in report["clusters"]:
+        names = ", ".join(item["name"] for item in cluster["members"])
+        print(f"\nCluster [{cluster['kind']}]: {names}")
+        print(f"  {cluster['recommendation']}")
+    for relationship in report["relationships"][:10]:
+        terms = ", ".join(relationship["shared_terms"])
+        print(f"\nOverlap: {relationship['left']} ↔ {relationship['right']} ({relationship['similarity']}; {terms})")
+        print(f"  {relationship['recommendation']}")
+    for item in report["maintenance"]:
+        detail = item.get("lines", item.get("file_count", ""))
+        print(f"\nMaintenance: {item['name']} ({item['kind']} {detail})")
+        print(f"  {item['recommendation']}")
+    for warning in errors:
+        print(f"WARNING: {warning}", file=sys.stderr)
+    return 0
+
+
 def default_roots() -> list[Path]:
-    root = safe_home() / "skills"
-    return [root] if root.exists() else []
+    """Resolve Hermes primary and configured external skill roots automatically."""
+    home = normalize_path(safe_home())
+    roots = [home / "skills"]
+    config_path = home / "config.yaml"
+    try:
+        config = yaml.safe_load(config_path.read_text(encoding="utf-8")) if config_path.is_file() else {}
+    except (OSError, yaml.YAMLError):
+        config = {}
+    if isinstance(config, dict):
+        skills_config = config.get("skills", {})
+        if isinstance(skills_config, dict):
+            external_dirs = skills_config.get("external_dirs", []) or []
+            if isinstance(external_dirs, str):
+                external_dirs = [external_dirs]
+            for value in external_dirs:
+                if isinstance(value, str) and value.strip():
+                    roots.append(Path(value).expanduser())
+    selected: list[Path] = []
+    seen: set[Path] = set()
+    for root in roots:
+        normalized = normalize_path(root)
+        if normalized not in seen:
+            selected.append(normalized)
+            seen.add(normalized)
+    return selected
 
 
 def load_json(path: Path, default: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -584,9 +835,9 @@ def records_from_state(state: dict[str, Any]) -> list[dict[str, Any]]:
 
 def current_scan(state_dir: Path, roots: list[Path] | None, save: bool = False) -> tuple[dict[str, Any], list[SkillRecord], list[str]]:
     state = load_json(state_path(state_dir), {"version": 1, "approvals": {}, "releases": []})
-    selected = roots if roots is not None else [Path(item) for item in state.get("roots", [])]
+    selected = roots if roots is not None else default_roots()
     if not selected:
-        selected = default_roots()
+        selected = [Path(item) for item in state.get("roots", [])]
     records, errors = discover(selected)
     if save:
         state = state_with_snapshot(state, selected, records, errors)
@@ -739,6 +990,7 @@ def route_record(record: SkillRecord, score: int = 0) -> dict[str, Any]:
         "name": record.name,
         "description": redact(record.description, 1024),
         "category": record.category,
+        "source": record.source,
         "risk_tags": risk_tags_for_record(record),
         "audit_status": record.audit_status,
         "file_count": record.file_count,
@@ -824,10 +1076,6 @@ def read_inspect_file(path: Path, max_bytes: int) -> tuple[str | None, str | Non
 def inspect_payload(record: SkillRecord, include_scripts: bool, acknowledge_risk: bool) -> dict[str, Any]:
     payload = route_record(record)
     payload.update({"requires_acknowledgement": False, "skill_md": None, "scripts": [], "warnings": []})
-    if record.audit_status == "critical" and not acknowledge_risk:
-        payload["requires_acknowledgement"] = True
-        payload["warnings"].append("Critical findings require explicit --ack-risk for one-time content inspection.")
-        return payload
 
     skill_dir = normalize_path(Path(record.skill_dir))
     marker, error = read_inspect_file(skill_dir / "SKILL.md", MAX_SKILL_MD_BYTES)
@@ -840,6 +1088,8 @@ def inspect_payload(record: SkillRecord, include_scripts: bool, acknowledge_risk
 
     if record.audit_status == "needs_review":
         payload["warnings"].append("This skill has review findings; Hermes still controls command execution approval.")
+    elif record.audit_status == "critical":
+        payload["warnings"].append("This skill has critical findings; MUSE shows it for inspection, while Hermes controls execution approval.")
     if not include_scripts:
         if record.script_files:
             payload["warnings"].append("Script contents omitted; re-run with --include-scripts to inspect them.")
@@ -872,9 +1122,6 @@ def command_inspect(args: argparse.Namespace) -> int:
     print(f"Path: {payload['path']}")
     for warning in payload["warnings"]:
         print(f"WARNING: {warning}")
-    if payload["requires_acknowledgement"]:
-        print(f"Re-run with --ack-risk to inspect this critical skill once: {payload['name']}")
-        return 0
     if payload["skill_md"] is not None:
         print("\n--- SKILL.md ---\n")
         print(payload["skill_md"], end="" if payload["skill_md"].endswith("\n") else "\n")
@@ -888,7 +1135,7 @@ def record_from_dict(value: dict[str, Any]) -> SkillRecord:
     findings = [Finding(str(item.get("code", "unknown")), str(item.get("severity", "warning")), str(item.get("message", "")), str(item.get("file", "")), str(item.get("evidence", ""))) for item in value.get("findings", []) if isinstance(item, dict)]
     return SkillRecord(
         skill_id=str(value.get("skill_id", "")), name=str(value.get("name", "")), description=str(value.get("description", "")),
-        root=str(value.get("root", "")), skill_dir=str(value.get("skill_dir", "")), rel_dir=str(value.get("rel_dir", ".")),
+        root=str(value.get("root", "")), source=str(value.get("source", "external")), skill_dir=str(value.get("skill_dir", "")), rel_dir=str(value.get("rel_dir", ".")),
         category=str(value.get("category", "uncategorized")), tags=string_list(value.get("tags")), version=str(value.get("version", "0.0.0")),
         content_hash=str(value.get("content_hash", "")), file_count=int(value.get("file_count", 0)), urls=string_list(value.get("urls")),
         script_files=string_list(value.get("script_files")), symlink_files=string_list(value.get("symlink_files")), declared_risk=str(value.get("declared_risk", "")),
@@ -927,6 +1174,12 @@ def approved_records(state: dict[str, Any], records: list[SkillRecord]) -> list[
         approval = approval_for(state, record)
         if approval.get("approved") is True and approval.get("content_hash") == record.content_hash and record.audit_status != "critical":
             selected.append(record)
+    duplicate_names = sorted({name for name in (item.name for item in selected) if sum(other.name == name for other in selected) > 1})
+    if duplicate_names:
+        raise SystemExit(
+            "Cannot publish duplicate skill names in one release: " + ", ".join(duplicate_names) + ". "
+            "Use one canonical source or approve only the intended copy."
+        )
     return selected
 
 
@@ -1322,8 +1575,14 @@ def build_parser() -> argparse.ArgumentParser:
     inspect.add_argument("skill", help="Skill name, id, or path returned by route")
     inspect.add_argument("--json", action="store_true")
     inspect.add_argument("--include-scripts", action="store_true", help="Include bounded, redacted script contents")
-    inspect.add_argument("--ack-risk", action="store_true", help="Acknowledge critical findings for this one-time inspection")
+    inspect.add_argument("--ack-risk", action="store_true", help="Deprecated compatibility flag; critical findings no longer block inspection")
     inspect.set_defaults(func=command_inspect)
+
+    garden = commands.add_parser("garden", help="Read-only cross-skill structure and overlap report")
+    add_common(garden)
+    garden.add_argument("--json", action="store_true")
+    garden.add_argument("--save", action="store_true", help="Persist the report in the local MUSE state file")
+    garden.set_defaults(func=command_garden)
 
     scan = commands.add_parser("scan", help="Read-only discover and audit skill roots")
     add_common(scan)
@@ -1384,6 +1643,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    configure_stdio()
     args = build_parser().parse_args(argv)
     args.state_dir = normalize_path(args.state_dir) if hasattr(args, "state_dir") else default_state_dir()
     if getattr(args, "command", "") in {"audit", "approve", "revoke", "bundle", "apply", "rollback"}:

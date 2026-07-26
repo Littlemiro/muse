@@ -62,14 +62,14 @@ metadata:
 
 | 字段 | 说明 | 默认值 |
 |------|------|--------|
-| `version` | 版本号 | `0.1.0` |
-| `author` | 作者/维护者 | `Hermes Agent` |
-| `license` | 开源协议 | `MIT` |
-| `platforms` | 支持平台 | `[linux, macos, windows]` |
-| `metadata.hermes.tags` | 标签列表 | 从分类+描述推断 |
-| `metadata.hermes.category` | 分类目录 | 从路径推断 |
-| `trigger_keywords` | 触发关键词 | 从名称+分类+描述推断 |
-| `metadata.hermes.related_skills` | 相关技能（同分类+标签重叠） | 自动推断 |
+| `version` | 版本号 | 未声明则视为未知，不自动补写 |
+| `author` | 作者/维护者 | 未声明则保持未知，不自动冒充作者 |
+| `license` | 开源协议 | 未声明则保持未知，不自动声明 MIT |
+| `platforms` | 支持平台 | 未验证，不自动声明全平台兼容 |
+| `metadata.hermes.tags` | 标签列表 | 可由本地 Garden 建议，不回写源文件 |
+| `metadata.hermes.category` | 分类目录 | 可由路径或 Garden 推断，不作为权限 |
+| `trigger_keywords` | 触发关键词 | 用于发现建议，不自动扩大触发范围 |
+| `metadata.hermes.related_skills` | 相关技能 | 由 Garden 外部报告保存，不强制写入 skill |
 
 ### 验证器要求
 
@@ -98,6 +98,6 @@ skills:
     - /path/to/.hermes/.muse/active/current
 ```
 
-MUSE 不会自动修改 Hermes 配置。使用 `python3 muse-console.py config --target <activation-root>` 获取配置片段。
+MUSE 不会自动修改 Hermes 配置。使用 `python3 muse-console.py config --target <activation-root>` 获取配置片段。第一轮的 `garden`、`route` 和 `inspect` 不需要 activation root。
 
 Hermes 的本地 `skills/` 优先于 `external_dirs`。要让 approved export 真正成为生效版本，应使用本地技能目录为空的 profile，或确保 source 不在该 profile 的 primary skills 目录中。

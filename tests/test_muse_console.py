@@ -48,6 +48,21 @@ class MuseConsoleTests(unittest.TestCase):
                 with patch.object(muse.sys, "platform", "win32"):
                     self.assertEqual(muse.safe_home(), explicit)
 
+    def test_configure_stdio_uses_utf8_when_stream_supports_reconfigure(self):
+        class FakeStream:
+            def __init__(self):
+                self.calls = []
+
+            def reconfigure(self, **kwargs):
+                self.calls.append(kwargs)
+
+        stdout = FakeStream()
+        stderr = FakeStream()
+        with patch.object(muse.sys, "platform", "win32"), patch.object(muse.sys, "stdout", stdout), patch.object(muse.sys, "stderr", stderr):
+            muse.configure_stdio()
+        self.assertEqual(stdout.calls, [{"encoding": "utf-8", "errors": "replace"}])
+        self.assertEqual(stderr.calls, [{"encoding": "utf-8", "errors": "replace"}])
+
     def test_safe_home_uses_windows_local_app_data(self):
         with tempfile.TemporaryDirectory() as temp:
             local_app_data = Path(temp) / "AppData" / "Local"
@@ -66,6 +81,31 @@ class MuseConsoleTests(unittest.TestCase):
                 with patch.object(muse.sys, "platform", "win32"):
                     with patch.object(muse.Path, "home", return_value=fallback):
                         self.assertEqual(muse.safe_home(), fallback / ".hermes")
+
+    def test_default_roots_reads_hermes_external_dirs(self):
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp) / "hermes"
+            primary = home / "skills"
+            external = Path(temp) / "muse-skills"
+            primary.mkdir(parents=True)
+            external.mkdir()
+            (home / "config.yaml").write_text(
+                "skills:\n  external_dirs:\n    - " + str(external) + "\n",
+                encoding="utf-8",
+            )
+            with patch.object(muse, "safe_home", return_value=home):
+                self.assertEqual(muse.default_roots(), [primary.resolve(), external.resolve()])
+
+    def test_discover_excludes_archives_and_reports_source(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "skills"
+            archive = root / ".archive"
+            write_skill(root, "devops", "active-skill", "Read and verify.")
+            write_skill(archive, "devops", "archived-skill", "Read and verify.")
+            records, errors = muse.discover([root])
+            self.assertEqual(errors, [])
+            self.assertEqual([item.name for item in records], ["active-skill"])
+            self.assertEqual(records[0].source, "external")
 
     def test_route_finds_current_skill_without_writing_catalog(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -92,6 +132,39 @@ class MuseConsoleTests(unittest.TestCase):
             self.assertIn("service", result["matches"][0]["risk_tags"])
             self.assertEqual(result["matches"][0]["path"], str(directory.resolve()))
             self.assertEqual(muse.state_path(state_dir).read_text(encoding="utf-8"), before)
+
+    def test_route_includes_source_and_garden_groups_opencli_family(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "skills"
+            state_dir = Path(temp) / "state"
+            write_skill(root, "agents", "opencli", "OpenCLI browser automation and site workflows.")
+            write_skill(root, "agents", "opencli-browser", "OpenCLI browser automation workflow.")
+            write_skill(root, "agents", "opencli-cookie", "OpenCLI cookie extraction workflow.")
+            args = type("Args", (), {"state_dir": state_dir, "root": [root], "task": "opencli browser", "json": True})()
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                self.assertEqual(muse.command_route(args), 0)
+            result = json.loads(output.getvalue())
+            self.assertEqual(result["matches"][0]["source"], "external")
+
+            garden_args = type("Args", (), {"state_dir": state_dir, "root": [root], "json": True, "save": False})()
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                self.assertEqual(muse.command_garden(garden_args), 0)
+            garden = json.loads(output.getvalue())
+            cluster = next(item for item in garden["clusters"] if item["key"] == "opencli")
+            self.assertEqual({item["name"] for item in cluster["members"]}, {"opencli", "opencli-browser", "opencli-cookie"})
+            self.assertIn("umbrella", cluster["recommendation"])
+
+            duplicate_root = Path(temp) / "duplicate"
+            write_skill(duplicate_root, "agents", "opencli-cookie", "OpenCLI cookie extraction workflow.")
+            duplicate_records, _ = muse.discover([root, duplicate_root])
+            duplicate_report = muse.garden_report(duplicate_records)
+            duplicate = next(item for item in duplicate_report["clusters"] if item["kind"] == "duplicate-source")
+            self.assertEqual({item["name"] for item in duplicate["members"]}, {"opencli-cookie"})
+            self.assertFalse(any(
+                item["left"] == item["right"] for item in duplicate_report["relationships"]
+            ))
 
     def test_inspect_reads_review_skill_without_approval_and_scripts_are_opt_in(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -123,7 +196,7 @@ class MuseConsoleTests(unittest.TestCase):
             result = json.loads(output.getvalue())
             self.assertEqual(result["scripts"][0]["content"], "echo repair\n")
 
-    def test_inspect_critical_requires_ack_and_redacts_secrets(self):
+    def test_inspect_critical_is_nonblocking_and_redacts_secrets(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp) / "skills"
             state_dir = Path(temp) / "state"
@@ -143,8 +216,9 @@ class MuseConsoleTests(unittest.TestCase):
                 self.assertEqual(muse.command_inspect(args), 0)
             result = json.loads(output.getvalue())
             self.assertEqual(result["audit_status"], "critical")
-            self.assertTrue(result["requires_acknowledgement"])
-            self.assertIsNone(result["skill_md"])
+            self.assertFalse(result["requires_acknowledgement"])
+            self.assertIsNotNone(result["skill_md"])
+            self.assertTrue(any("critical findings" in warning for warning in result["warnings"]))
 
             args.ack_risk = True
             output = io.StringIO()
@@ -237,7 +311,7 @@ class MuseConsoleTests(unittest.TestCase):
             write_skill(root_a, "one", "same", "Read.")
             write_skill(root_b, "two", "same", "Read.")
             records, _ = muse.discover([root_a, root_b])
-            self.assertEqual({item.audit_status for item in records}, {"critical"})
+            self.assertEqual({item.audit_status for item in records}, {"needs_review"})
             self.assertTrue(all("duplicate_name" in {finding.code for finding in item.findings} for item in records))
 
     def test_activation_root_cannot_overlap_source_root(self):

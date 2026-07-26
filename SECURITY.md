@@ -17,7 +17,7 @@ Hermes 自带的 Skills Hub lock/audit 与 MUSE 审计是互补关系：前者�
 - 只把 unchanged、approved 且没有 critical findings 的技能导出。
 - 将每次导出保存为独立 release，回滚不需要联网。
 
-`route` 和 `inspect` 是独立的只读发现路径：它们可以从配置的 source roots 找到尚未 approved 的 skill，但不修改 state、审批、release 或 Hermes 配置。`inspect` 不执行脚本、不访问 URL；默认不输出脚本正文，`--include-scripts` 只读取受大小限制且经过脱敏的普通文件。`critical` skill 必须显式使用 `--ack-risk` 才能一次性读取正文，但这不等于允许其进入长期 release。
+`garden`、`route` 和 `inspect` 是独立的只读发现路径：它们可以从配置的 source roots 找到尚未 approved 的 skill，但不修改技能、审批、release 或 Hermes 配置。`inspect` 不执行脚本、不访问 URL；默认不输出脚本正文，`--include-scripts` 只读取受大小限制且经过脱敏的普通文件。`critical` 和 `needs_review` skill 可以被读取；MUSE 只展示风险，Hermes 仍负责执行权限。
 
 ## 建议的 Hermes 配置
 
@@ -39,8 +39,8 @@ Hermes 的本地 `~/.hermes/skills` 优先于 `external_dirs`。因此不要用�
 ## 风险等级
 
 - `ready`：没有静态发现；仍需人工理解技能意图。
-- `needs_review`：发现脚本、外部链接、风险声明不一致或潜在副作用；批准时必须使用 `--ack-risk`。
-- `critical`：发现凭证样式内容、远程管道执行、越界 symlink、无效结构或其他阻断项；不能批准。
+- `needs_review`：发现脚本、外部链接、风险声明不一致或潜在副作用；读取不受阻断，长期发布时需要额外审阅。
+- `critical`：发现凭证样式内容、远程管道执行、越界 symlink、无效结构或其他高风险项；读取不受阻断，但默认不能进入长期 approved release。
 - `stale`：已批准技能的内容 hash 发生变化；必须重新审计和批准。
 
 ## MCP

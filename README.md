@@ -1,6 +1,6 @@
 # MUSE — MUlti-purpose Skill Ecosystem
 
-**MUSE** 是一个兼容 Agent Skills 的本地技能资产治理层，首先服务 Hermes。它不替 Hermes 思考，也不替 Hermes 学习；它负责让技能变得可发现、可审计、可批准、可组合、可回滚。
+**MUSE** 是一个兼容 Agent Skills 的本地 Skill Garden，首先服务 Hermes。它不替 Hermes 思考，也不替 Hermes 执行；它负责发现不断生长的技能库，审计安全与隐私，识别重复和职责冲突，并提出可回滚的治理建议。
 
 ```
 ┌──────────────────────────────────────────────────┐
@@ -15,50 +15,59 @@
 └──────────────────────────────────────────────────┘
 ```
 
-## 快速开始：Hermes 本地控制台
+## 快速开始：只读 Skill Garden
 
-推荐让 MUSE 管理一个“本地技能目录为空、只挂载 approved export”的 Hermes profile。Hermes 的本地 `skills/` 优先于 `external_dirs`；如果直接扫描并导出到默认 profile，旧本地技能会遮蔽 MUSE release，`apply`/`rollback` 会主动拒绝这种配置。
+第一轮默认使用只读 Garden，不需要先创建 profile，也不需要先 approve skill。MUSE 会自动读取 Hermes 的主 skills 目录和 `config.yaml` 中的 `skills.external_dirs`。
 
 ```bash
-# 1. 克隆
+# 1. 克隆并安装依赖
 git clone https://github.com/Littlemiro/muse.git
 cd muse
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
 
-# 2. 创建一个不预置本地技能的 Hermes profile
-hermes profile create muse --no-skills
+# 2. 自动读取 Hermes primary skills 和 config.yaml 中的 external_dirs
+python3 muse-console.py garden
 
-# 3. 先只读审计原 profile 的技能，不会改源文件
-python3 muse-console.py audit --root ~/.hermes/skills --state-dir ~/.hermes/.muse
+# 3. 输出稳定 JSON，供 Agent 或其他工具消费
+python3 muse-console.py garden --json
 
-# 3b. 对单个 skill 做结构/拆分建议审计；只读，不移动或删除文件
+# 4. 对单个 skill 做结构/拆分建议审计；只读，不移动或删除文件
 python3 muse-console.py refactor-audit ~/.hermes/skills/research/my-skill
 
-# 4. 查看技能并批准一个没有变化的版本
-python3 muse-console.py list --state-dir ~/.hermes/.muse
-python3 muse-console.py approve <skill-name> --state-dir ~/.hermes/.muse
-
-# 5. 按分类生成 bundle；必须写入目标 profile 的 bundle 目录
-python3 muse-console.py bundle --state-dir ~/.hermes/.muse \
-  --output-dir ~/.hermes/profiles/muse/skill-bundles
-
-# 6. 导出批准的技能到独立目录；源技能不会被覆盖
-python3 muse-console.py apply --state-dir ~/.hermes/.muse \
-  --target ~/.hermes/.muse/active \
-  --consumer-home ~/.hermes/profiles/muse
-
-# 7. 打印目标 profile 的 config.yaml 片段，手动加入 external_dirs
-python3 muse-console.py config --target ~/.hermes/.muse/active
-
-# 8. 需要时回滚到上一版批准集合
-python3 muse-console.py rollback --state-dir ~/.hermes/.muse \
-  --target ~/.hermes/.muse/active \
-  --consumer-home ~/.hermes/profiles/muse
-
-# 9. 使用这个 profile
-muse chat
+# 5. 按任务发现技能并按需读取；无需先 approve
+python3 muse-console.py route "帮我修 jellyfin" --json
+python3 muse-console.py inspect jellyfin-repair --json
 ```
 
-建议先在独立 Hermes profile 中使用，并打开 Hermes 自己的技能写入审批：
+`garden`、`audit`、`route` 和 `inspect` 默认只读。它们不会执行技能脚本、抓取 URL、修改技能或改变 Hermes 配置。
+
+Garden 会告诉你：
+
+- 哪些 skill 具有相同前缀，可能应组成 umbrella/spoke 结构；
+- 哪些 skill 的描述和触发词高度重叠；
+- 哪些 skill 的 `SKILL.md` 过大或文件过多；
+- 哪些 skill 含脚本、网络、服务管理、破坏性文件操作或凭证风险；
+- 哪些 skill 来自主目录、external directory 或 MUSE release。
+
+Garden 只生成证据和建议，不自动 merge、archive、delete 或 rewrite。生命周期修改由 Hermes Curator 或用户决定。
+
+## 高级：经过批准的发布流程
+
+团队发布或需要固定 skill pack 时，仍可使用 release 工作流：
+
+```bash
+python3 muse-console.py audit --root ~/.hermes/skills --state-dir ~/.hermes/.muse
+python3 muse-console.py approve <skill-name> --state-dir ~/.hermes/.muse
+python3 muse-console.py bundle --state-dir ~/.hermes/.muse
+python3 muse-console.py apply --state-dir ~/.hermes/.muse --target ~/.hermes/.muse/active
+python3 muse-console.py rollback --state-dir ~/.hermes/.muse --target ~/.hermes/.muse/active
+```
+
+发布流程是可选的长期分发边界，不是日常临时使用 skill 的前置条件。源目录和 release 目录仍应分开，Hermes profile 仍应保留自己的执行审批。
+
+建议在 Hermes 中打开它自己的技能写入审批：
 
 ```yaml
 skills:
@@ -69,9 +78,7 @@ memory:
   write_approval: true
 ```
 
-MUSE 的 `apply` 输出目录是 Hermes 的外部技能目录候选；MUSE 不会自动修改 Hermes 配置，也不会把源技能目录改成可写镜像。源目录应对 Hermes 进程只读；`external_dirs` 只挂载 `active/current`。
-
-要让 Hermes 自动执行“先查 MUSE、再决定是否读取”的路由规则，请把仓库中的 `muse-router/` 作为一个常驻 skill 安装到目标 profile。它只调用 `route`/`inspect` 这两个只读命令；没有匹配时仍回退到 Hermes 的普通工作流。
+MUSE 的 `apply` 输出目录是 Hermes 的外部技能目录候选；MUSE 不会自动修改 Hermes 配置，也不会把源技能目录改成可写镜像。源目录应对 Hermes 进程只读；`external_dirs` 只挂载 `active/current`。Hermes 适配插件将在后续阶段监听 skill 创建/修改事件，让 Garden 自动跟上 Hermes 的自生长；第一轮不要求安装 `muse-router`，也不改 Hermes 主代码。
 
 ## 按需发现和读取
 
@@ -87,11 +94,11 @@ python3 muse-console.py inspect jellyfin-repair --json
 # needs_review 会带风险提示；脚本默认只列出文件名
 python3 muse-console.py inspect jellyfin-repair --include-scripts
 
-# critical 默认只返回摘要；一次性查看正文需要明确确认
-python3 muse-console.py inspect diy-nas-setup --ack-risk
+# critical 也可以读取正文；MUSE 只增加风险提示
+python3 muse-console.py inspect diy-nas-setup --json
 ```
 
-`route` 只搜索当前配置的 roots，不会扫描整台电脑或联网。`inspect` 不执行脚本、不抓取 URL；脚本内容必须显式请求，并受大小限制和凭证脱敏保护。临时读取不会让 skill 进入 Hermes profile；需要长期启用时仍使用 `approve`/`apply`。
+`route` 只搜索当前配置的 roots，不会扫描整台电脑或联网。`inspect` 不执行脚本、不抓取 URL；脚本内容必须显式请求，并受大小限制和凭证脱敏保护。critical 和 needs_review 都可以被读取，但执行权限仍由 Hermes 控制。临时读取不会让 skill 进入 Hermes profile；需要长期固定分发时才使用 `approve`/`apply`。
 
 ## 与原始论文的关系
 
@@ -105,10 +112,10 @@ Hermes 现在也有 Skills Hub、`skills audit`、来源/hash lock 和原生 bun
 |------|------|
 | `SPEC.md` | MUSE SKILL.md 格式规范（frontmatter 标准 + 目录结构） |
 | `CLASSIFICATION.md` | 12 分类 + 多维标签 + 自生长分类体系 |
-| `muse-console.py` | route/inspect 发现读取、审计、结构建议、批准、bundle、版本导出和回滚 |
+| `muse-console.py` | garden、route/inspect 发现读取、审计、结构建议、批准、bundle、版本导出和回滚 |
 | `muse-enforce.py` | 安全默认的格式审计器；写入需要显式 `--fix` |
 | `muse-mcp-server.py` | 可选 MCP bridge；默认只监听 loopback |
-| `muse-router/SKILL.md` | Hermes 的先路由、后读取决策规则 |
+| `muse-router/SKILL.md` | 可选的 Hermes 路由提示；不是 MUSE 的核心依赖 |
 | `requirements.txt` | Python 依赖 |
 | `demo-hello/SKILL.md` | 干净的示例模板，用来参考格式 |
 | `tests/` | 控制台的安全回归测试 |
@@ -117,7 +124,7 @@ Hermes 现在也有 Skills Hub、`skills audit`、来源/hash lock 和原生 bun
 
 - MUSE 从不抓取技能中的 URL，也不执行技能里的脚本。
 - `route`/`inspect` 可以发现和临时读取未 approved skill，但不会把它写入 active release。
-- `critical` skill 需要 `inspect --ack-risk` 才能读取正文；长期 `apply` 仍拒绝 critical。
+- `critical` skill 可以被 `inspect` 读取；MUSE 只展示风险，不替 Hermes 决定能否执行。长期 `apply` 仍是更严格的发布流程。
 - 未批准、内容 hash 已变化或静态审计为 critical 的技能不会被 `apply` 导出。
 - `apply` 只写独立的版本目录；源技能目录不会被覆盖。
 - `apply`/`rollback` 仍保留 source root 与 Hermes primary skills 的冲突检查。
