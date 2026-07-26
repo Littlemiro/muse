@@ -78,7 +78,7 @@ memory:
   write_approval: true
 ```
 
-MUSE 的 `apply` 输出目录是 Hermes 的外部技能目录候选；MUSE 不会自动修改 Hermes 配置，也不会把源技能目录改成可写镜像。源目录应对 Hermes 进程只读；`external_dirs` 只挂载 `active/current`。Hermes 适配插件将在后续阶段监听 skill 创建/修改事件，让 Garden 自动跟上 Hermes 的自生长；第一轮不要求安装 `muse-router`，也不改 Hermes 主代码。
+MUSE 的 `apply` 输出目录是 Hermes 的外部技能目录候选；MUSE 不会自动修改 Hermes 配置，也不会把源技能目录改成可写镜像。源目录应对 Hermes 进程只读；`external_dirs` 只挂载 `active/current`。当前推荐用仓库内的 `muse-hermes-hook.py` 监听 Hermes 的 `pre_llm_call`，让 Garden 在每轮任务前自动发现新 skill；这不需要修改 Hermes 主代码，也不要求安装 `muse-router`。
 
 ## 按需发现和读取
 
@@ -100,11 +100,26 @@ python3 muse-console.py inspect diy-nas-setup --json
 
 `route` 只搜索当前配置的 roots，不会扫描整台电脑或联网。`inspect` 不执行脚本、不抓取 URL；脚本内容必须显式请求，并受大小限制和凭证脱敏保护。critical 和 needs_review 都可以被读取，但执行权限仍由 Hermes 控制。临时读取不会让 skill 进入 Hermes profile；需要长期固定分发时才使用 `approve`/`apply`。
 
+## Hermes 自动路由：让 MUSE 先于 `skill_view`
+
+如果只把 `muse-router/SKILL.md` 放进 Hermes，Hermes 仍会把它当普通 skill，按照自己的系统提示先调用 `skill_view`。这不是自动集成。要让 MUSE 真正成为发现层，应把 `muse-hermes-hook.py` 注册为 Hermes 的 `pre_llm_call` shell hook：
+
+```yaml
+hooks:
+  pre_llm_call:
+    - command: C:/Users/Administrator/AppData/Local/hermes/hermes-agent/venv/Scripts/python.exe C:/Users/Administrator/muse/muse-hermes-hook.py
+      timeout: 20
+```
+
+钩子收到当前用户消息后，会在模型看到任务前执行一次只读的 `route → inspect`，并把最多 3 个候选和最高匹配项的 `SKILL.md` 摘要注入当前 turn。它不会执行 skill、访问 URL、修改审批或激活 profile；Hermes 仍负责工具调用和命令审批。`muse-router` 因此是可选的人工说明，不应作为自动路由的依赖，也不必放进 `skills.external_dirs`。
+
+为保持效率，钩子维护 `.muse/route-cache.json`：只要技能目录的文件元数据没有变化，就直接使用缓存；Hermes 自己创建、修改或删除 skill 后，下一轮会发现指纹变化并刷新审计。该缓存不包含用户消息，也不保存未脱敏的 skill 内容。
+
 ## 与原始论文的关系
 
 本项目受 [MUSE-Autoskill](https://arxiv.org/html/2605.27366v1) 的技能生命周期思想启发，但不是论文作者的官方实现，也不复刻完整 Agent runtime。论文负责创建、记忆、管理、评估和修炼；MUSE-Hermes 把其中适合本地运维的部分落成技能资产控制层，并复用 Hermes 自己的 `skill_manage`、memory 和审批机制。
 
-Hermes 现在也有 Skills Hub、`skills audit`、来源/hash lock 和原生 bundles；MUSE 不替代这些能力，而是在它们之外提供面向任意本地 source root 的“批准后发布、profile 生效、版本回滚”边界。这是本项目应主张的实际 gap，而不是重新宣称拥有完整技能生命周期。
+Hermes 现在也有 Skills Hub、`skills audit`、来源/hash lock 和原生 bundles；MUSE 不替代这些能力，而是在它们之外提供面向任意本地 source root 的发现、风险标记、任务路由和“批准后发布、profile 生效、版本回滚”边界。这是本项目应主张的实际 gap，而不是重新宣称拥有完整技能生命周期。
 
 ## 仓库内容
 
@@ -112,7 +127,8 @@ Hermes 现在也有 Skills Hub、`skills audit`、来源/hash lock 和原生 bun
 |------|------|
 | `SPEC.md` | MUSE SKILL.md 格式规范（frontmatter 标准 + 目录结构） |
 | `CLASSIFICATION.md` | 12 分类 + 多维标签 + 自生长分类体系 |
-| `muse-console.py` | garden、route/inspect 发现读取、审计、结构建议、批准、bundle、版本导出和回滚 |
+| `muse-console.py` | garden、route/inspect 发现读取、指纹缓存、审计、结构建议、批准、bundle、版本导出和回滚 |
+| `muse-hermes-hook.py` | Hermes `pre_llm_call` 只读适配器：自动 route → inspect；不执行 skill |
 | `muse-enforce.py` | 安全默认的格式审计器；写入需要显式 `--fix` |
 | `muse-mcp-server.py` | 可选 MCP bridge；默认只监听 loopback |
 | `muse-router/SKILL.md` | 可选的 Hermes 路由提示；不是 MUSE 的核心依赖 |
@@ -129,6 +145,7 @@ Hermes 现在也有 Skills Hub、`skills audit`、来源/hash lock 和原生 bun
 - `apply` 只写独立的版本目录；源技能目录不会被覆盖。
 - `apply`/`rollback` 仍保留 source root 与 Hermes primary skills 的冲突检查。
 - `rollback` 只切换已生成的 release，不从网络重新下载内容。
+- `muse-hermes-hook.py` 只读取 Hermes hook stdin 的当前任务；它不读取环境变量中的密钥，不把任务文本写入 route cache，也不调用 MCP/网络服务。
 - MCP bridge 默认绑定 `127.0.0.1`；远程绑定必须显式 `--allow-insecure-remote`，并应放在外部认证代理之后。
 - 详细威胁模型见 [SECURITY.md](SECURITY.md)。
 

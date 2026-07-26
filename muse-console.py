@@ -47,6 +47,7 @@ except ImportError as exc:  # pragma: no cover - exercised by installation error
 
 
 VERSION = "0.2.0"
+ROUTE_CACHE_VERSION = 1
 FRONTMATTER_RE = re.compile(r"^---\s*\r?\n(.*?)\r?\n---(?:\r?\n|$)", re.DOTALL)
 URL_RE = re.compile(r'''https?://[^\s<>"'`)\]]+''', re.IGNORECASE)
 NAME_RE = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
@@ -838,6 +839,113 @@ def records_from_state(state: dict[str, Any]) -> list[dict[str, Any]]:
     return skills if isinstance(skills, list) else []
 
 
+def route_cache_path(state_dir: Path) -> Path:
+    """Return the ephemeral catalog used by the Hermes pre-LLM adapter."""
+    return state_dir / "route-cache.json"
+
+
+def route_manifest(roots: list[Path]) -> tuple[list[dict[str, Any]], list[str]]:
+    """Collect metadata-only fingerprints for cache invalidation.
+
+    This deliberately does not read skill contents or follow symlinks.  It is
+    cheap enough to run before every Hermes turn and notices newly created
+    skills, changed SKILL.md files, and changed helper scripts without making
+    a full audit scan when nothing changed.
+    """
+    manifest: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for raw_root in roots:
+        root = normalize_path(raw_root)
+        if not root.exists():
+            errors.append(f"root_missing: {root}")
+            continue
+        if not root.is_dir():
+            errors.append(f"root_not_directory: {root}")
+            continue
+        for current, directories, filenames in os.walk(root, topdown=True, followlinks=False):
+            current_path = Path(current)
+            directories[:] = [
+                directory for directory in directories
+                if directory not in EXCLUDED_DISCOVERY_DIRS
+                and not (current_path / directory).is_symlink()
+            ]
+            candidates = list(filenames)
+            if "SKILL.md" in directories:
+                candidates.append("SKILL.md")
+                directories.remove("SKILL.md")
+            for name in candidates:
+                candidate = current_path / name
+                try:
+                    file_stat = candidate.lstat()
+                except OSError as exc:
+                    errors.append(f"stat_error: {candidate}: {exc}")
+                    continue
+                try:
+                    relative = candidate.relative_to(root).as_posix()
+                except ValueError:
+                    relative = str(candidate)
+                manifest.append({
+                    "root": str(root),
+                    "path": relative,
+                    "mode": stat.S_IFMT(file_stat.st_mode),
+                    "size": file_stat.st_size,
+                    "mtime_ns": file_stat.st_mtime_ns,
+                })
+    manifest.sort(key=lambda item: (item["root"], item["path"]))
+    return manifest, errors
+
+
+def route_catalog(
+    state_dir: Path,
+    roots: list[Path],
+    refresh: bool = False,
+) -> tuple[list[SkillRecord], list[str], bool]:
+    """Load a valid route catalog or refresh it after a filesystem change.
+
+    The cache is intentionally separate from state.json: routing is allowed to
+    discover Hermes-created skills but must not mutate approvals, releases, or
+    the user's lifecycle state.  The returned boolean says whether a full
+    content audit was performed during this call.
+    """
+    selected = [normalize_path(root) for root in roots]
+    manifest, manifest_errors = route_manifest(selected)
+    cache_path = route_cache_path(state_dir)
+    if not refresh and cache_path.is_file():
+        try:
+            cache = json.loads(cache_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            cache = {}
+        if (
+            isinstance(cache, dict)
+            and cache.get("version") == ROUTE_CACHE_VERSION
+            and cache.get("roots") == [str(root) for root in selected]
+            and cache.get("manifest") == manifest
+            and isinstance(cache.get("skills"), list)
+        ):
+            records = [record_from_dict(item) for item in cache["skills"] if isinstance(item, dict)]
+            cached_errors = cache.get("errors", [])
+            errors = [str(item) for item in cached_errors] if isinstance(cached_errors, list) else []
+            errors.extend(item for item in manifest_errors if item not in errors)
+            return records, errors, False
+
+    records, discover_errors = discover(selected)
+    errors = list(discover_errors)
+    errors.extend(item for item in manifest_errors if item not in errors)
+    try:
+        save_json(cache_path, {
+            "version": ROUTE_CACHE_VERSION,
+            "roots": [str(root) for root in selected],
+            "manifest": manifest,
+            "errors": errors,
+            "scanned_at": now_iso(),
+            "skills": [record.to_dict() for record in records],
+        })
+    except OSError:
+        # Routing remains useful in read-only or locked-down Hermes homes.
+        pass
+    return records, errors, True
+
+
 def current_scan(state_dir: Path, roots: list[Path] | None, save: bool = False) -> tuple[dict[str, Any], list[SkillRecord], list[str]]:
     state = load_json(state_path(state_dir), {"version": 1, "approvals": {}, "releases": []})
     selected = roots if roots is not None else default_roots()
@@ -1060,7 +1168,10 @@ def command_route(args: argparse.Namespace) -> int:
     task = args.task.strip()
     if not task:
         raise SystemExit("Task description cannot be empty.")
-    _, records, errors = current_scan(args.state_dir, args.root or None, save=False)
+    if getattr(args, "cache", False):
+        records, errors, _ = route_catalog(args.state_dir, args.root or default_roots())
+    else:
+        _, records, errors = current_scan(args.state_dir, args.root or None, save=False)
     matches = [route_record(record, score) for score, record in route_matches(records, task)]
     result = {"version": VERSION, "task": task, "matches": matches, "root_warnings": errors}
     if args.json:
@@ -1130,7 +1241,10 @@ def inspect_payload(record: SkillRecord, include_scripts: bool, acknowledge_risk
 
 
 def command_inspect(args: argparse.Namespace) -> int:
-    _, records, _ = current_scan(args.state_dir, args.root or None, save=False)
+    if getattr(args, "cache", False):
+        records, _, _ = route_catalog(args.state_dir, args.root or default_roots())
+    else:
+        _, records, _ = current_scan(args.state_dir, args.root or None, save=False)
     record = find_record(records, args.skill)
     payload = inspect_payload(record, args.include_scripts, args.ack_risk)
     if args.json:
@@ -1587,6 +1701,7 @@ def build_parser() -> argparse.ArgumentParser:
     add_common(route)
     route.add_argument("task", help="Natural-language task description")
     route.add_argument("--json", action="store_true")
+    route.add_argument("--cache", action="store_true", help="Use the metadata-invalidated route catalog")
     route.set_defaults(func=command_route)
 
     inspect = commands.add_parser("inspect", help="Read one skill on demand without approving or applying it")
@@ -1595,6 +1710,7 @@ def build_parser() -> argparse.ArgumentParser:
     inspect.add_argument("--json", action="store_true")
     inspect.add_argument("--include-scripts", action="store_true", help="Include bounded, redacted script contents")
     inspect.add_argument("--ack-risk", action="store_true", help="Deprecated compatibility flag; critical findings no longer block inspection")
+    inspect.add_argument("--cache", action="store_true", help="Use the metadata-invalidated route catalog")
     inspect.set_defaults(func=command_inspect)
 
     garden = commands.add_parser("garden", help="Read-only cross-skill structure and overlap report")

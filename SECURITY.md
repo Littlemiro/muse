@@ -17,7 +17,13 @@ Hermes 自带的 Skills Hub lock/audit 与 MUSE 审计是互补关系：前者�
 - 只把 unchanged、approved 且没有 critical findings 的技能导出。
 - 将每次导出保存为独立 release，回滚不需要联网。
 
-`garden`、`route` 和 `inspect` 是独立的只读发现路径：它们可以从配置的 source roots 找到尚未 approved 的 skill，但不修改技能、审批、release 或 Hermes 配置。`inspect` 不执行脚本、不访问 URL；默认不输出脚本正文，`--include-scripts` 只读取受大小限制且经过脱敏的普通文件。`critical` 和 `needs_review` skill 可以被读取；MUSE 只展示风险，Hermes 仍负责执行权限。
+`garden`、`route` 和 `inspect` 是独立的只读发现路径：它们可以从配置的 source roots 找到尚未 approved 的 skill，但不修改技能、审批、release 或 Hermes 配置。`inspect` 不执行脚本、不访问 URL；默认不输出脚本正文，`--include-scripts` 只读取受大小限制且经过脱敏的普通文件。`critical` 和 `needs_review` skill 可以被读取；MUSE 只展示风险，Hermes 仍负责执行权限。使用 `--cache` 或 Hermes hook 时，MUSE 只额外写入 `.muse/route-cache.json`，内容是文件元数据和已脱敏的审计记录，不包含用户任务文本或未脱敏正文。
+
+## Hermes 自动路由钩子
+
+`muse-hermes-hook.py` 是一个 `pre_llm_call` shell hook 适配器。它从 Hermes 通过 stdin 传入的 JSON 中读取当前任务，在本地执行 `route → inspect`，再通过 stdout 返回一个 JSON `context`。它不读取环境变量中的凭证，不执行 skill 脚本，不抓取 URL，不调用 MCP，也不改变 Hermes 的审批状态。
+
+该钩子会把最高匹配 skill 的正文限制在模型上下文大小以内，并默认省略脚本内容。Hermes 的 hook consent/allowlist 仍然是必要的；不要用 `--accept-hooks` 或 `hooks_auto_accept: true` 来掩盖未经审查的第三方命令。部署后应运行 `hermes hooks doctor`，确认命令路径、超时和 allowlist 均符合预期。
 
 ## 建议的 Hermes 配置
 
