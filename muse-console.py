@@ -917,6 +917,11 @@ def find_record(records: list[SkillRecord], reference: str) -> SkillRecord:
     if len(exact) == 1:
         return exact[0]
     if len(exact) > 1:
+        if all(item.name == reference for item in exact):
+            preferred_order = min(SOURCE_ORDER.get(item.source, 3) for item in exact)
+            preferred = [item for item in exact if SOURCE_ORDER.get(item.source, 3) == preferred_order]
+            if len(preferred) == 1:
+                return preferred[0]
         raise SystemExit(f"Ambiguous skill reference {reference!r}; use one of: {', '.join(item.skill_id for item in exact)}")
     raise SystemExit(f"Skill not found: {reference}")
 

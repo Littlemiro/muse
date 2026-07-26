@@ -179,6 +179,7 @@ class MuseConsoleTests(unittest.TestCase):
             matches = muse.route_matches(records, "opencli browser", limit=2)
             self.assertEqual(matches[0][1].source, "hermes-primary")
             self.assertEqual(matches[1][1].source, "external")
+            self.assertEqual(muse.find_record(records, "opencli").source, "hermes-primary")
 
     def test_inspect_reads_review_skill_without_approval_and_scripts_are_opt_in(self):
         with tempfile.TemporaryDirectory() as temp:
